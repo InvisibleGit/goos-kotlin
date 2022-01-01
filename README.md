@@ -59,4 +59,10 @@ see something like:
 On each commit, this README.md will be updated elaborating changes and
 decisions during development recreation. Given that we have library changes
 mentioned above, and since some changes are chaotic, especially in Chapter 11,
-this is the only way to help you understand behind the scenes thought process. 
+this is the only way to help you understand behind the scenes thought process.
+
+### Chapter 10
+
+There is just one code sample of an acceptance end-to-end test. To make project
+compilable, the only addition I've added are stubbed classes this test uses where
+each method is just failing with "not implemented" message.
