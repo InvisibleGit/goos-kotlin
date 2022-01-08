@@ -67,8 +67,11 @@ public class FakeAuctionServer {
         return itemId;
     }
 
-    public void reportPrice(int price, int increment, String bidder) {
-        fail("not implemented");
+    public void reportPrice(int price, int increment, String bidder) throws SmackException.NotConnectedException, InterruptedException {
+        currentChat.send(String.format(
+            "SOLVersion: 1.1; Event: PRICE; CurrentPrice: %d; Increment: %d; Bidder: %s;",
+            price, increment, bidder
+        ));
     }
 
     public void hasReceivedBid(int bid, String sniperId) {

@@ -244,3 +244,9 @@ Failure_.
 
 Now we can continually run this failing acceptance test and not be bothered
 with Openfire refusing to connect.
+
+
+#### Step 03 - Implementing auction.reportPrice()
+
+Though the book implements methods further down the acceptance test, we only
+implement this simple method to get to the next test failure.
