@@ -3,6 +3,7 @@ package auctionsniper;
 import static auctionsniper.Main.AUCTION_RESOURCE;
 import static auctionsniper.Main.ITEM_ID_AS_LOGIN;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
@@ -17,7 +18,6 @@ import org.jivesoftware.smack.chat2.Chat;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.fail;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -54,8 +54,8 @@ public class FakeAuctionServer {
         assertThat(messages.poll(5, TimeUnit.SECONDS)).describedAs("Message").isNotNull();
     }
 
-    public void announceClosed() {
-        fail("not implemented");
+    public void announceClosed() throws SmackException.NotConnectedException, InterruptedException {
+        currentChat.send("");
     }
 
     public void stop() {

@@ -4,6 +4,8 @@ import auctionsniper.ui.MainWindow;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.chat2.Chat;
+import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
@@ -28,26 +30,38 @@ public class Main {
 
     private MainWindow ui;
 
+    private Chat notToBeGC;
+
     public Main() throws Exception {
         startUserInterface();
     }
 
     public static void main(String... args) throws Exception {
         Main main = new Main();
+        main.joinAuction(
+            connect(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]),
+            args[ARG_ITEM_ID]
+        );
+    }
 
-        XMPPTCPConnection connection = connectTo(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]);
+    private void joinAuction(final XMPPTCPConnection connection, final String itemId) throws Exception {
+        ChatManager.getInstanceFor(connection).addIncomingListener((from, message, chat) -> {
+            notToBeGC = chat;
+
+            SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST) );
+
+            connection.disconnect();
+        });
 
         Message message = connection.getStanzaFactory()
                 .buildMessageStanza()
-                .to(auctionId(args[ARG_ITEM_ID], connection))
+                .to(auctionId(itemId, connection))
                 .setBody("")
                 .build();
         connection.sendStanza(message);
-
-        connection.disconnect();
     }
 
-    private static XMPPTCPConnection connectTo(String hostname, String username, String password) throws SmackException, IOException, XMPPException, InterruptedException {
+    private static XMPPTCPConnection connect(String hostname, String username, String password) throws SmackException, IOException, XMPPException, InterruptedException {
         XMPPTCPConnection connection = new XMPPTCPConnection(
             XMPPTCPConnectionConfiguration.builder()
                 .setXmppDomain(hostname)

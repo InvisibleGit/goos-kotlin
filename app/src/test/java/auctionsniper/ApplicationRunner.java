@@ -7,13 +7,14 @@ import static auctionsniper.FakeAuctionServer.XMPP_HOSTNAME;
 
 import static auctionsniper.ui.MainWindow.SNIPER_STATUS_NAME;
 
-import static org.junit.Assert.fail;
-
 import org.assertj.swing.core.BasicRobot;
 import org.assertj.swing.core.Robot;
 import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.launcher.ApplicationLauncher;
 import org.assertj.swing.fixture.FrameFixture;
+
+import static org.assertj.swing.timing.Pause.pause;
+import org.assertj.swing.timing.Condition;
 
 
 public class ApplicationRunner {
@@ -33,7 +34,26 @@ public class ApplicationRunner {
     }
 
     public void showSniperHasLostAuction() {
-        fail("not implemented");
+        String expectedValue = MainWindow.STATUS_LOST;
+
+        pause(new Condition(String.format("sniper status text to change to: \"%s\"", expectedValue)) {
+            String foundValue = EMPTY_TEXT;
+
+            @Override
+            public boolean test() {
+                foundValue = window.label(SNIPER_STATUS_NAME).text();
+
+                if (foundValue.equals(expectedValue))
+                    return true;
+
+                return false; // will append #descriptionAddendum()
+            }
+
+            @Override
+            public String descriptionAddendum() {
+                return ", found: \"" + foundValue + "\""; // adds more descriptive error by appending found value
+            }
+        }, 1000);
     }
 
     public void stop() {

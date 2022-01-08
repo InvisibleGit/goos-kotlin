@@ -204,3 +204,17 @@ This includes:
 2) We also close the XMPP connection after sending the `Message`, though not in the
    book. If we didn't we'd have the same problem with `XMPPError: conflict - cancel` as
    explained on p.110 - _A Surprise Failure_.
+
+
+#### Step 04 - Losing an Auction
+
+Implements final two steps of acceptance test: `auction.announceClosed()` and
+`application.showSniperHasLostAuction()`.
+
+Of note is that we needed to modify `ApplicationRunner.showSniperHasLostAuction()` to
+wait for the sniper status label to change with AssertJ Swing `pause()` with `Condition()`.
+Otherwise, test would be flaky and often fail while expecting the `STATUS_LOST` to be
+shown there...
+
+Also, note _Why the Chat Field?_ on p.101 still holds in the latest `smack` library
+we use.
