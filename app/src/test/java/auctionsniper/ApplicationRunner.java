@@ -29,7 +29,7 @@ public class ApplicationRunner {
         window = WindowFinder.findFrame(getMainFrameByName(MainWindow.MAIN_WINDOW_NAME)).using(robot);
         window.focus();
 
-        window.label(SNIPER_STATUS_NAME).requireText(Main.STATUS_JOINING);
+        window.label(SNIPER_STATUS_NAME).requireText(MainWindow.STATUS_JOINING);
     }
 
     public void showSniperHasLostAuction() {

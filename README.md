@@ -176,3 +176,31 @@ notable differences in the code:
 ##### 2nd Commit
 
 This commit resolves p.97 _Showing the Sniper State_ of the app codebase.
+
+
+#### Step 03 - Implementing auction.hasReceivedJoinRequestFromSniper()
+
+Updates `FakeAuctionServer` with code listing on p.94 with
+`hasReceivedJoinRequestFromSniper()` implementation.
+
+Since we're using newer version of smack library, the implementation is a bit simpler
+because we're not creating inner class `SingleMessageListener`.
+
+By looking at _Connecting to the Auction_ on p.99 we see that `Main.STATUS_JOINING` is
+moved, and we know that it is moved to `MainWindow` class because of listing on p.101.
+
+Likewise, constants `AUCTION_RESOURCE` and `ITEM_ID_AS_LOGIN` are moved from
+`FakeAuctionServer` to `Main`.
+
+In `Main` the difference from book comes from the fact that `smack` library moved on and
+deprecated methods used in the book or changed the API.
+
+This includes:
+ 
+1) We create empty `Message` with `createStanzaFactory()` builder. We need to provide
+   `FullJID` for the `to()` setter, not a String. We also must provide empty String to
+   `setBody()` setter, because otherwise, auction server won't detect it as a `Message`.
+
+2) We also close the XMPP connection after sending the `Message`, though not in the
+   book. If we didn't we'd have the same problem with `XMPPError: conflict - cancel` as
+   explained on p.110 - _A Surprise Failure_.
