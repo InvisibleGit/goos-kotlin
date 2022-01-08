@@ -171,3 +171,8 @@ notable differences in the code:
    library so there is no point. Anyway, imagine we had something similar and you'd
    get similar error as they have on p.96. Value for that string constant
    (`Auction Sniper Main`) was taken from their error logs.
+
+
+##### 2nd Commit
+
+This commit resolves p.97 _Showing the Sniper State_ of the app codebase.

@@ -5,6 +5,8 @@ import auctionsniper.ui.MainWindow;
 import static auctionsniper.CustomMatchers.getMainFrameByName;
 import static auctionsniper.FakeAuctionServer.XMPP_HOSTNAME;
 
+import static auctionsniper.ui.MainWindow.SNIPER_STATUS_NAME;
+
 import static org.junit.Assert.fail;
 
 import org.assertj.swing.core.BasicRobot;
@@ -26,6 +28,8 @@ public class ApplicationRunner {
         Robot robot = BasicRobot.robotWithCurrentAwtHierarchy();
         window = WindowFinder.findFrame(getMainFrameByName(MainWindow.MAIN_WINDOW_NAME)).using(robot);
         window.focus();
+
+        window.label(SNIPER_STATUS_NAME).requireText(Main.STATUS_JOINING);
     }
 
     public void showSniperHasLostAuction() {
