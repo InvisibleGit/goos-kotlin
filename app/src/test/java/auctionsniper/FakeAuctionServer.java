@@ -11,6 +11,7 @@ import org.jivesoftware.smack.chat2.Chat;
 
 import static org.junit.Assert.fail;
 
+
 public class FakeAuctionServer {
     public static final String XMPP_HOSTNAME = "localhost";
     public static final String AUCTION_RESOURCE = "Auction";
@@ -47,5 +48,9 @@ public class FakeAuctionServer {
 
     public void stop() {
         connection.disconnect();
+    }
+
+    public String getItemId() {
+        return itemId;
     }
 }
