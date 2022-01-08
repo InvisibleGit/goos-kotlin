@@ -66,3 +66,70 @@ this is the only way to help you understand behind the scenes thought process.
 There is just one code sample of an acceptance end-to-end test. To make project
 compilable, the only addition I've added are stubbed classes this test uses where
 each method is just failing with "not implemented" message.
+
+### Chapter 11
+
+Chapter 11 is arguably the most chaotic one to follow. Primarily because you're
+getting glimpses into codebase, but they're, time wise, out of order.
+
+The chapter can logically be read in two parts. First part (start-p.95) build up
+test infrastructure. Second part (p.95-end) is using this test infrastructure to
+build the app.
+
+Of course, you cannot write test infrastructure without constants defined in the
+app part. So they're developed in tandem, but you're clueless about small decisions
+authors made during this time, thus you'll see, for example, constants moved in
+various code listings.
+
+First issue is that book starts with working on class `ApplicationRunner`, yet
+acceptance test we're trying to pass, needs `FakeAuctionServer` to pass it's
+step 1, `auction.startSellingItem()`. So, we're doing 'The Fake Auction' on p.92 first,
+and then returning to 'The Application Runner' on p.90.
+
+Also, code listings show later stages of the codebase then we're at. Those can
+be discerned because they have implemented methods which are needed for later
+_steps_ of acceptance test. We ignore those methods in favor of mimicking
+progressive development between commits.
+
+#### Step 01 - Implementing auction.startSellingItem()
+
+Openfire should be installed on local machine and configured as explained on p.89.
+
+Though they write that they have ant script which starts this server, create users,
+and so on in the text, they don't! They've set up the Openfire manually and start it
+manually as well.
+
+You can use current Openfire version (v4.6.7 at the time of writing).
+
+We also switched from v3 of the smack library used in the book to the latest v4.
+This is more modularized version of the library and we need to use its API a bit
+differently.
+
+Changes of note:
+
+1) Dependencies are more explicit in what we need given that v4 of smack library is modular:
+ - `org.igniterealtime.smack:smack-java8` - core smack library
+ - `org.igniterealtime.smack:smack-tcp` - TCP transport layer for connecting to server
+ - `org.igniterealtime.smack:smack-extensions` - for `org.jivesoftware.smack.chat2.*` package
+ 
+2) Alluded by `smack-tcp` dependency, is that we need to use TCP variant of its
+connection class: `XMPPTCPConnection`, since `XMPPConnection` is now abstract in v4 of the
+library.
+
+3) We don't want to use SSL protocol on local installation of Openfire, so we need to use
+`XMPPTCPConnectionConfiguration.builder()` when creating the connection, passing in
+`setSecurityMode(SecurityMode.disabled)`.
+
+4) `startSellingItem()` is implemented more succinctly, using lambda.
+
+5) We also implement `stop()` method which is called from `@After` method in an
+end-to-end test. You may easily overlook it, and if you don't disconnect from Openfire,
+on subsequent test runs you'll get:
+`org.jivesoftware.smack.XMPPException$XMPPErrorException: XMPPError: conflict - cancel`
+exception, which is explained later in the book (in next chapter, p.110 - A Surprise
+Failure), because of how it was explained to configure Openfire.
+
+6) We also added `throws Exception` to constructor of `AuctionSniperEndToEndTest` and
+current end-to-end test to avoid try/catch statements in code and resemble more the code
+in the book.
+ 
