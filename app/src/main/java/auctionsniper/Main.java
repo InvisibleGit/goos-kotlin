@@ -15,6 +15,8 @@ import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 
@@ -45,12 +47,11 @@ public class Main {
     }
 
     private void joinAuction(final XMPPTCPConnection connection, final String itemId) throws Exception {
+        disconnectWhenUICloses(connection);
         ChatManager.getInstanceFor(connection).addIncomingListener((from, message, chat) -> {
             notToBeGC = chat;
 
             SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST) );
-
-            connection.disconnect();
         });
 
         Message message = connection.getStanzaFactory()
@@ -59,6 +60,15 @@ public class Main {
                 .setBody("")
                 .build();
         connection.sendStanza(message);
+    }
+
+    private void disconnectWhenUICloses(XMPPTCPConnection connection) {
+        ui.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                connection.disconnect();
+            }
+        });
     }
 
     private static XMPPTCPConnection connect(String hostname, String username, String password) throws SmackException, IOException, XMPPException, InterruptedException {

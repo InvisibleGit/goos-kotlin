@@ -234,3 +234,13 @@ Since we use stubbed functions in `FakeAuctionServer` and `ApplicationRunner`, a
 point you'll have trouble running them multiple times because of
 `XMPPError: conflict - cancel` exception until we reach p.110 - _A Surprise Failure_. We'll resolve
 this in the next step/commit.
+
+
+#### Step 02 - A Surprise Failure
+
+We're just skipping a few pages to fix this annoying issue of not closing the
+connection properly. This is basically just implementing p.110 - _A Surprise
+Failure_.
+
+Now we can continually run this failing acceptance test and not be bothered
+with Openfire refusing to connect.
