@@ -5,6 +5,7 @@ import auctionsniper.ui.MainWindow;
 import static auctionsniper.CustomMatchers.getMainFrameByName;
 import static auctionsniper.FakeAuctionServer.XMPP_HOSTNAME;
 
+import static auctionsniper.Main.AUCTION_RESOURCE;
 import static auctionsniper.ui.MainWindow.SNIPER_STATUS_NAME;
 
 import org.assertj.swing.core.BasicRobot;
@@ -14,12 +15,15 @@ import org.assertj.swing.launcher.ApplicationLauncher;
 import org.assertj.swing.fixture.FrameFixture;
 
 import static org.assertj.swing.timing.Pause.pause;
+import static org.junit.Assert.fail;
+
 import org.assertj.swing.timing.Condition;
 
 
 public class ApplicationRunner {
     public static final String SNIPER_ID = "sniper";
     public static final String SNIPER_PASSWORD = "sniper";
+    public static final String SNIPER_XMPP_ID = SNIPER_ID + "@localhost/" + AUCTION_RESOURCE;
 
     private FrameFixture window;
 
@@ -33,7 +37,7 @@ public class ApplicationRunner {
         window.label(SNIPER_STATUS_NAME).requireText(MainWindow.STATUS_JOINING);
     }
 
-    public void showSniperHasLostAuction() {
+    public void showsSniperHasLostAuction() {
         String expectedValue = MainWindow.STATUS_LOST;
 
         pause(new Condition(String.format("sniper status text to change to: \"%s\"", expectedValue)) {
@@ -54,6 +58,10 @@ public class ApplicationRunner {
                 return ", found: \"" + foundValue + "\""; // adds more descriptive error by appending found value
             }
         }, 1000);
+    }
+
+    public void hasShownSniperIsBidding() {
+        fail("not implemented");
     }
 
     public void stop() {

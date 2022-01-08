@@ -19,6 +19,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 
 public class FakeAuctionServer {
@@ -64,5 +65,13 @@ public class FakeAuctionServer {
 
     public String getItemId() {
         return itemId;
+    }
+
+    public void reportPrice(int price, int increment, String bidder) {
+        fail("not implemented");
+    }
+
+    public void hasReceivedBid(int bid, String sniperId) {
+        fail("not implemented");
     }
 }

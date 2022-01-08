@@ -209,12 +209,28 @@ This includes:
 #### Step 04 - Losing an Auction
 
 Implements final two steps of acceptance test: `auction.announceClosed()` and
-`application.showSniperHasLostAuction()`.
+`application.showsSniperHasLostAuction()`.
 
-Of note is that we needed to modify `ApplicationRunner.showSniperHasLostAuction()` to
+Of note is that we needed to modify `ApplicationRunner.showsSniperHasLostAuction()` to
 wait for the sniper status label to change with AssertJ Swing `pause()` with `Condition()`.
 Otherwise, test would be flaky and often fail while expecting the `STATUS_LOST` to be
 shown there...
 
 Also, note _Why the Chat Field?_ on p.101 still holds in the latest `smack` library
 we use.
+
+
+### Chapter 12
+
+Chapter 11 was chaotic for various reasons. You'll be glad to know that the following
+chapters are much easier to follow.
+
+
+#### Step 01 - New Acceptance Test
+
+Created new acceptance test from p.106 _Starting with a Test_.
+
+Since we use stubbed functions in `FakeAuctionServer` and `ApplicationRunner`, at this
+point you'll have trouble running them multiple times because of
+`XMPPError: conflict - cancel` exception until we reach p.110 - _A Surprise Failure_. We'll resolve
+this in the next step/commit.
