@@ -30,6 +30,9 @@ public class Main implements AuctionEventListener {
     public static final String ITEM_ID_AS_LOGIN = "auction-%s";
     public static final String AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;
 
+    public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
+    public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;";
+
     private final AuctionMessageTranslator translator = new AuctionMessageTranslator(this);
 
     private MainWindow ui;
@@ -59,7 +62,7 @@ public class Main implements AuctionEventListener {
         Message message = connection.getStanzaFactory()
                 .buildMessageStanza()
                 .to(auctionId(itemId, connection))
-                .setBody("")
+                .setBody(JOIN_COMMAND_FORMAT)
                 .build();
         connection.sendStanza(message);
     }

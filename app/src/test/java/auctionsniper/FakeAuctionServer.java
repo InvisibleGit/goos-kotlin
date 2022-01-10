@@ -3,6 +3,7 @@ package auctionsniper;
 import static auctionsniper.Main.AUCTION_RESOURCE;
 import static auctionsniper.Main.ITEM_ID_AS_LOGIN;
 
+import org.assertj.core.api.Condition;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
@@ -19,7 +20,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 
 
 public class FakeAuctionServer {
@@ -51,12 +51,29 @@ public class FakeAuctionServer {
         });
     }
 
-    public void hasReceivedJoinRequestFromSniper() throws InterruptedException {
-        assertThat(messages.poll(5, TimeUnit.SECONDS)).describedAs("Message").isNotNull();
+    public void hasReceivedJoinRequestFrom(String sniperId) throws InterruptedException {
+        final String expectedMessage = Main.JOIN_COMMAND_FORMAT;
+
+        receivedAMessageMatching(
+            sniperId,
+            new Condition<>(message -> message.equals(expectedMessage), expectedMessage)
+        );
+    }
+
+    private void receivesAMessage(Condition<String> messageMatcher) throws InterruptedException {
+        final Message message = messages.poll(5, TimeUnit.SECONDS);
+
+        assertThat(message).describedAs("Message").isNotNull();
+        assertThat(message.getBody()).is(messageMatcher);
+    }
+
+    private void receivedAMessageMatching(String sniperId, Condition<String> messageMatcher) throws InterruptedException {
+        receivesAMessage(messageMatcher);
+        assertThat(sniperId).isEqualTo(sniperId);
     }
 
     public void announceClosed() throws SmackException.NotConnectedException, InterruptedException {
-        currentChat.send("");
+        currentChat.send("SOLVersion: 1.1; Event: CLOSE;");
     }
 
     public void stop() {
@@ -74,7 +91,12 @@ public class FakeAuctionServer {
         ));
     }
 
-    public void hasReceivedBid(int bid, String sniperId) {
-        fail("not implemented");
+    public void hasReceivedBid(int bid, String sniperId) throws InterruptedException {
+        final String expectedMessage = String.format(Main.BID_COMMAND_FORMAT, bid);
+
+        receivedAMessageMatching(
+            sniperId,
+            new Condition<>(message -> message.equals(expectedMessage), expectedMessage)
+        );
     }
 }

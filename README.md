@@ -278,3 +278,23 @@ now they more resemble original code by the authors.
 
 Now that application has place of translating messages, we need to differentiate
 between PRICE and CLOSE messages.
+
+
+#### Step 06 - Implementing auction.hasReceivedBid()
+
+We're now backtracking to p.107 and implementing `auction.hasReceivedBid()`.
+
+Again, some differences because we use AssertJ, but the test now fails in
+expected way.
+
+We follow a couple of refactorings, including updating
+`auction.hasReceivedJoinRequestFromSniper()`, and extracting message constants
+`JOIN_COMMAND_FORMAT` and `BID_COMMAND_FORMAT` to `Main`.
+
+To end the chapter we fix the `auction.announceClosed()` as described on p.120.
+
+With that, we've improved first end-to-end test, and we have two Unit tests
+passing.
+
+Next chapter is continuing working on testing `auction.hasReceivedBid()` from
+the second end-to-end test.
