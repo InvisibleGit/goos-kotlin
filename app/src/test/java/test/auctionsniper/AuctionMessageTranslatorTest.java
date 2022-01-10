@@ -17,4 +17,13 @@ public class AuctionMessageTranslatorTest {
 
         verify(listener, times(1)).auctionClosed();
     }
+
+    @Test
+    public void notifiesBidDetailsWhenCurrentPriceMessageReceived() {
+        String message = "SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: Someone else;";
+
+        translator.translateMessage(message);
+
+        verify(listener, times(1)).currentPrice(192, 7);
+    }
 }

@@ -272,3 +272,9 @@ At the end we took the opportunity to clean up `showsSniperHasLostAuction()` and
 `hasShownSniperIsBidding()` in `ApplicationRunner` by creating private utility
 function `showsSniperStatus()` containing common code. Additional benefit is that
 now they more resemble original code by the authors.
+
+
+#### Step 05 - Unpacking a Price Message
+
+Now that application has place of translating messages, we need to differentiate
+between PRICE and CLOSE messages.
