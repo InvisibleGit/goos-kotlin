@@ -20,7 +20,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 
-public class Main {
+public class Main implements AuctionEventListener {
     public static final int ARG_HOSTNAME = 0;
     public static final int ARG_USERNAME = 1;
     public static final int ARG_PASSWORD = 2;
@@ -29,6 +29,8 @@ public class Main {
     public static final String AUCTION_RESOURCE = "Auction";
     public static final String ITEM_ID_AS_LOGIN = "auction-%s";
     public static final String AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;
+
+    private final AuctionMessageTranslator translator = new AuctionMessageTranslator(this);
 
     private MainWindow ui;
 
@@ -51,7 +53,7 @@ public class Main {
         ChatManager.getInstanceFor(connection).addIncomingListener((from, message, chat) -> {
             notToBeGC = chat;
 
-            SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST) );
+            translator.translateMessage(message.getBody());
         });
 
         Message message = connection.getStanzaFactory()
@@ -92,5 +94,10 @@ public class Main {
 
     private void startUserInterface() throws Exception {
         SwingUtilities.invokeAndWait(() -> ui = new MainWindow());
+    }
+
+    @Override
+    public void auctionClosed() {
+        SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST));
     }
 }

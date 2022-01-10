@@ -15,7 +15,6 @@ import org.assertj.swing.launcher.ApplicationLauncher;
 import org.assertj.swing.fixture.FrameFixture;
 
 import static org.assertj.swing.timing.Pause.pause;
-import static org.junit.Assert.fail;
 
 import org.assertj.swing.timing.Condition;
 
@@ -38,16 +37,22 @@ public class ApplicationRunner {
     }
 
     public void showsSniperHasLostAuction() {
-        String expectedValue = MainWindow.STATUS_LOST;
+        showsSniperStatus(MainWindow.STATUS_LOST);
+    }
 
-        pause(new Condition(String.format("sniper status text to change to: \"%s\"", expectedValue)) {
+    public void hasShownSniperIsBidding() {
+        showsSniperStatus(MainWindow.STATUS_BIDDING);
+    }
+
+    private void showsSniperStatus(String statusText) {
+        pause(new Condition(String.format("sniper status text to change to: \"%s\"", statusText)) {
             String foundValue = EMPTY_TEXT;
 
             @Override
             public boolean test() {
                 foundValue = window.label(SNIPER_STATUS_NAME).text();
 
-                if (foundValue.equals(expectedValue))
+                if (foundValue.equals(statusText))
                     return true;
 
                 return false; // will append #descriptionAddendum()
@@ -58,10 +63,6 @@ public class ApplicationRunner {
                 return ", found: \"" + foundValue + "\""; // adds more descriptive error by appending found value
             }
         }, 1000);
-    }
-
-    public void hasShownSniperIsBidding() {
-        fail("not implemented");
     }
 
     public void stop() {

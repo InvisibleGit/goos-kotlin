@@ -250,3 +250,25 @@ with Openfire refusing to connect.
 
 Though the book implements methods further down the acceptance test, we only
 implement this simple method to get to the next test failure.
+
+
+#### Step 04 - The First Unit Test
+
+When we implemented next test method, `application.hasShownSniperIsBidding()`,
+we need to skip to p.114 - _The First Unit Test_, and start creating first
+unit test class.
+
+We added test Mockito testing library to easily create mocks and test their
+behavior. It is another deviation from book's choice of jMock, but it is choice
+made on account of Mockito being more modern, under active development and with
+a much nicer API for verification of mocks.
+
+Another small deviation is that we don't bind `AuctionMessageTranslator` as an
+implementation of `Smack`'s `MessageListener` because there is no point with
+v4 of `Smack`, and also we're able to call its single method `translateMessage()` 
+and not `processMessage()`.
+
+At the end we took the opportunity to clean up `showsSniperHasLostAuction()` and
+`hasShownSniperIsBidding()` in `ApplicationRunner` by creating private utility
+function `showsSniperStatus()` containing common code. Additional benefit is that
+now they more resemble original code by the authors.
