@@ -298,3 +298,11 @@ passing.
 
 Next chapter is continuing working on testing `auction.hasReceivedBid()` from
 the second end-to-end test.
+
+
+### Chapter 13
+
+#### Step 01 - Introducing AuctionSniper
+
+We're just following creation of `SniperListener` interface and retrofitting it
+into `Main`.

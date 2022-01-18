@@ -20,7 +20,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 
-public class Main implements AuctionEventListener {
+public class Main implements SniperListener {
     public static final int ARG_HOSTNAME = 0;
     public static final int ARG_USERNAME = 1;
     public static final int ARG_PASSWORD = 2;
@@ -33,7 +33,7 @@ public class Main implements AuctionEventListener {
     public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
     public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;";
 
-    private final AuctionMessageTranslator translator = new AuctionMessageTranslator(this);
+    private final AuctionMessageTranslator translator = new AuctionMessageTranslator(new AuctionSniper(this));
 
     private MainWindow ui;
 
@@ -100,11 +100,10 @@ public class Main implements AuctionEventListener {
     }
 
     @Override
-    public void auctionClosed() {
+    public void sniperLost() {
         SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST));
     }
 
-    @Override
     public void currentPrice(int price, int increment) {
         SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_BIDDING));
     }
