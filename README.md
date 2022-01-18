@@ -306,3 +306,9 @@ the second end-to-end test.
 
 We're just following creation of `SniperListener` interface and retrofitting it
 into `Main`.
+
+
+#### Step 02 - Sending a Bid
+
+This step finalizes code required to pass the second end-to-end test by sending
+back a bid.

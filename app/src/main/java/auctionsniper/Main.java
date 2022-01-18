@@ -33,7 +33,7 @@ public class Main implements SniperListener {
     public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
     public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;";
 
-    private final AuctionMessageTranslator translator = new AuctionMessageTranslator(new AuctionSniper(this));
+    private AuctionMessageTranslator translator;
 
     private MainWindow ui;
 
@@ -52,6 +52,24 @@ public class Main implements SniperListener {
     }
 
     private void joinAuction(final XMPPTCPConnection connection, final String itemId) throws Exception {
+        Auction auction = new Auction() {
+            @Override
+            public void bid(int amount) {
+                try {
+                    Message message = connection.getStanzaFactory()
+                        .buildMessageStanza()
+                        .to(auctionId(itemId, connection))
+                        .setBody(String.format(BID_COMMAND_FORMAT, amount))
+                        .build();
+                    connection.sendStanza(message);
+                } catch (XmppStringprepException|SmackException.NotConnectedException|InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+        translator = new AuctionMessageTranslator(new AuctionSniper(auction, this));
+
         disconnectWhenUICloses(connection);
         ChatManager.getInstanceFor(connection).addIncomingListener((from, message, chat) -> {
             notToBeGC = chat;
@@ -60,10 +78,10 @@ public class Main implements SniperListener {
         });
 
         Message message = connection.getStanzaFactory()
-                .buildMessageStanza()
-                .to(auctionId(itemId, connection))
-                .setBody(JOIN_COMMAND_FORMAT)
-                .build();
+            .buildMessageStanza()
+            .to(auctionId(itemId, connection))
+            .setBody(JOIN_COMMAND_FORMAT)
+            .build();
         connection.sendStanza(message);
     }
 
@@ -104,7 +122,8 @@ public class Main implements SniperListener {
         SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST));
     }
 
-    public void currentPrice(int price, int increment) {
+    @Override
+    public void sniperBidding() {
         SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_BIDDING));
     }
 }
