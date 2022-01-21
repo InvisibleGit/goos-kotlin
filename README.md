@@ -341,3 +341,8 @@ Simple follow through.
 #### Step 01 - First, a Failing Test
 
 We create a new failing end-to-end test `sniperWinsAnAuctionByBiddingHigher()`.
+
+
+#### Step 02 - Who Knows About Bidders?
+
+Simple follow through.

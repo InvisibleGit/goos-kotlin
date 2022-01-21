@@ -2,10 +2,17 @@ package auctionsniper;
 
 import java.util.HashMap;
 
+import auctionsniper.AuctionEventListener.PriceSource;
+import static auctionsniper.AuctionEventListener.PriceSource.FromOtherBidder;
+import static auctionsniper.AuctionEventListener.PriceSource.FromSniper;
+
+
 public class AuctionMessageTranslator {
+    private final String sniperId;
     AuctionEventListener listener;
 
-    public AuctionMessageTranslator(AuctionEventListener listener) {
+    public AuctionMessageTranslator(String sniperId, AuctionEventListener listener) {
+        this.sniperId = sniperId;
         this.listener = listener;
     }
 
@@ -16,7 +23,11 @@ public class AuctionMessageTranslator {
         if (eventType.equals("CLOSE")) {
             listener.auctionClosed();
         } else if (eventType.equals("PRICE")) {
-            listener.currentPrice(event.currentPrice(), event.increment());
+            listener.currentPrice(
+                event.currentPrice(),
+                event.increment(),
+                event.isFrom(sniperId)
+            );
         }
     }
 
@@ -51,6 +62,14 @@ public class AuctionMessageTranslator {
 
         public int increment() {
             return getInt("Increment");
+        }
+
+        public PriceSource isFrom(String sniperId) {
+            return sniperId.equals(bidder()) ? FromSniper : FromOtherBidder;
+        }
+
+        private String bidder() {
+            return get("Bidder");
         }
 
         private String get(String fieldName) {

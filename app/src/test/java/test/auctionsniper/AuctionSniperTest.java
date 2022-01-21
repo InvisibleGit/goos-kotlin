@@ -1,11 +1,13 @@
 package test.auctionsniper;
 
 import auctionsniper.Auction;
+import auctionsniper.AuctionEventListener.PriceSource;
 import auctionsniper.AuctionSniper;
 import auctionsniper.SniperListener;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
+
 
 public class AuctionSniperTest {
     private final SniperListener sniperListener = mock(SniperListener.class);
@@ -25,7 +27,7 @@ public class AuctionSniperTest {
         final int price = 1001;
         final int increment = 25;
 
-        sniper.currentPrice(price, increment);
+        sniper.currentPrice(price, increment, PriceSource.FromOtherBidder);
 
         verify(auction, times(1)).bid(price + increment);
         verify(sniperListener).sniperBidding();

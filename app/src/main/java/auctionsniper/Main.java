@@ -55,7 +55,10 @@ public class Main {
         disconnectWhenUICloses(connection);
 
         Auction auction = new XMPPAuction(connection, itemId);
-        translator = new AuctionMessageTranslator(new AuctionSniper(auction, new SniperStateDisplayer()));
+        translator = new AuctionMessageTranslator(
+            connection.getUser().toString(),
+            new AuctionSniper(auction, new SniperStateDisplayer())
+        );
         auction.join();
     }
 
