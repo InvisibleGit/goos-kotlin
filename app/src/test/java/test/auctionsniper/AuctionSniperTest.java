@@ -32,4 +32,11 @@ public class AuctionSniperTest {
         verify(auction, times(1)).bid(price + increment);
         verify(sniperListener).sniperBidding();
     }
+
+    @Test
+    public void reportsIsWinningWhenCurrentPriceComesFromSniper() {
+        sniper.currentPrice(123, 45, PriceSource.FromSniper);
+
+        verify(sniperListener).sniperWinning();
+    }
 }

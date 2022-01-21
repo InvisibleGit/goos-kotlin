@@ -346,3 +346,11 @@ We create a new failing end-to-end test `sniperWinsAnAuctionByBiddingHigher()`.
 #### Step 02 - Who Knows About Bidders?
 
 Simple follow through.
+
+
+#### Step 03 - The Sniper Has More To Say
+
+Apart from adding `snipperWinning()` in `SniperStateDisplayer` which was hinted
+on p.134, but we skipped in previous chapter's step 03, commit 2 (since it wasn't
+relevant at a time), we simply follow through the text and now have an additional
+passing unit test + we're one step closer to passing end-to-end test!
