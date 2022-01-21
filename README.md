@@ -329,3 +329,8 @@ XMPPAuction because of Smack API, and thus our, differences.
 
 The only difference is that we don't implement `snipperWinning()`, since we
 haven't started working on the next end-to-end test (which is the next chapter).
+
+
+##### Commit 3 - Tidying Up the Translator
+
+Simple follow through.

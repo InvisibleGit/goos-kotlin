@@ -10,27 +10,55 @@ public class AuctionMessageTranslator {
     }
 
     public void translateMessage(String message) {
-        HashMap<String, String> event = unpackEventFrom(message);
+        AuctionEvent event = AuctionEvent.from(message);
 
-        String type = event.get("Event");
-        if (type.equals("CLOSE")) {
+        String eventType = event.type();
+        if (eventType.equals("CLOSE")) {
             listener.auctionClosed();
-        } else if (type.equals("PRICE")) {
-            listener.currentPrice(
-                Integer.parseInt(event.get("CurrentPrice")),
-                Integer.parseInt(event.get("Increment"))
-            );
+        } else if (eventType.equals("PRICE")) {
+            listener.currentPrice(event.currentPrice(), event.increment());
         }
     }
 
-    private HashMap<String, String> unpackEventFrom(String message) {
-        HashMap<String, String> event = new HashMap<>();
+    private static class AuctionEvent {
+        private HashMap<String, String> fields = new HashMap<>();
 
-        for (String element : message.split(";")) {
-            String[] pair = element.split(":");
-            event.put(pair[0].trim(), pair[1].trim());
+        public static AuctionEvent from(String message) {
+            AuctionEvent event = new AuctionEvent();
+
+            for (String field : fieldsIn(message))
+                event.addField(field);
+
+            return event;
         }
 
-        return event;
+        static String[] fieldsIn(String messageBody) {
+            return messageBody.split(";");
+        }
+
+        private void addField(String field) {
+            String[] pair = field.split(":");
+            fields.put(pair[0].trim(), pair[1].trim());
+        }
+
+        public String type() {
+            return get("Event");
+        }
+
+        public int currentPrice() {
+            return getInt("CurrentPrice");
+        }
+
+        public int increment() {
+            return getInt("Increment");
+        }
+
+        private String get(String fieldName) {
+            return fields.get(fieldName);
+        }
+
+        private int getInt(String fieldName) {
+            return Integer.parseInt(get(fieldName));
+        }
     }
 }
