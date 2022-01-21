@@ -334,3 +334,10 @@ haven't started working on the next end-to-end test (which is the next chapter).
 ##### Commit 3 - Tidying Up the Translator
 
 Simple follow through.
+
+
+### Chapter 14
+
+#### Step 01 - First, a Failing Test
+
+We create a new failing end-to-end test `sniperWinsAnAuctionByBiddingHigher()`.
