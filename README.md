@@ -312,3 +312,14 @@ into `Main`.
 
 This step finalizes code required to pass the second end-to-end test by sending
 back a bid.
+
+
+#### Step 03 - Tidying Up the Implementation
+
+We're finishing the chapter with three little steps:
+
+
+##### Commit 1 - Extracting XMPPAuction
+
+Cleaning up `joinAuction()` method with small changes in implementation of
+XMPPAuction because of Smack API, and thus our, differences.

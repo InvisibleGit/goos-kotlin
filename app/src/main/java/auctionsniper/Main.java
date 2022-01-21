@@ -52,37 +52,11 @@ public class Main implements SniperListener {
     }
 
     private void joinAuction(final XMPPTCPConnection connection, final String itemId) throws Exception {
-        Auction auction = new Auction() {
-            @Override
-            public void bid(int amount) {
-                try {
-                    Message message = connection.getStanzaFactory()
-                        .buildMessageStanza()
-                        .to(auctionId(itemId, connection))
-                        .setBody(String.format(BID_COMMAND_FORMAT, amount))
-                        .build();
-                    connection.sendStanza(message);
-                } catch (XmppStringprepException|SmackException.NotConnectedException|InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        };
-        translator = new AuctionMessageTranslator(new AuctionSniper(auction, this));
-
         disconnectWhenUICloses(connection);
-        ChatManager.getInstanceFor(connection).addIncomingListener((from, message, chat) -> {
-            notToBeGC = chat;
 
-            translator.translateMessage(message.getBody());
-        });
-
-        Message message = connection.getStanzaFactory()
-            .buildMessageStanza()
-            .to(auctionId(itemId, connection))
-            .setBody(JOIN_COMMAND_FORMAT)
-            .build();
-        connection.sendStanza(message);
+        Auction auction = new XMPPAuction(connection, itemId);
+        translator = new AuctionMessageTranslator(new AuctionSniper(auction, this));
+        auction.join();
     }
 
     private void disconnectWhenUICloses(XMPPTCPConnection connection) {
@@ -125,5 +99,49 @@ public class Main implements SniperListener {
     @Override
     public void sniperBidding() {
         SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_BIDDING));
+    }
+
+    public class XMPPAuction implements Auction {
+        private final XMPPTCPConnection connection;
+        private final String itemId;
+
+        public XMPPAuction(XMPPTCPConnection connection, String itemId) {
+            this.connection = connection;
+            this.itemId = itemId;
+
+            ChatManager.getInstanceFor(connection).addIncomingListener((from, message, chat) -> {
+                notToBeGC = chat;
+
+                translator.translateMessage(message.getBody());
+            });
+        }
+
+        @Override
+        public void join() throws Exception {
+            sendMessage(JOIN_COMMAND_FORMAT);
+        }
+
+        private void sendMessage(final String message) throws Exception {
+            Message stanza = connection.getStanzaFactory()
+                .buildMessageStanza()
+                .to(auctionId(itemId, connection))
+                .setBody(message)
+                .build();
+            connection.sendStanza(stanza);
+        }
+
+        @Override
+        public void bid(int amount) {
+            try {
+                Message message = connection.getStanzaFactory()
+                    .buildMessageStanza()
+                    .to(auctionId(itemId, connection))
+                    .setBody(String.format(BID_COMMAND_FORMAT, amount))
+                    .build();
+                connection.sendStanza(message);
+            } catch (XmppStringprepException|SmackException.NotConnectedException|InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
