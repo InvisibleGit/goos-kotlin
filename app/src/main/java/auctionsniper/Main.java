@@ -20,7 +20,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 
-public class Main implements SniperListener {
+public class Main {
     public static final int ARG_HOSTNAME = 0;
     public static final int ARG_USERNAME = 1;
     public static final int ARG_PASSWORD = 2;
@@ -55,7 +55,7 @@ public class Main implements SniperListener {
         disconnectWhenUICloses(connection);
 
         Auction auction = new XMPPAuction(connection, itemId);
-        translator = new AuctionMessageTranslator(new AuctionSniper(auction, this));
+        translator = new AuctionMessageTranslator(new AuctionSniper(auction, new SniperStateDisplayer()));
         auction.join();
     }
 
@@ -89,16 +89,6 @@ public class Main implements SniperListener {
 
     private void startUserInterface() throws Exception {
         SwingUtilities.invokeAndWait(() -> ui = new MainWindow());
-    }
-
-    @Override
-    public void sniperLost() {
-        SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST));
-    }
-
-    @Override
-    public void sniperBidding() {
-        SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_BIDDING));
     }
 
     public class XMPPAuction implements Auction {
@@ -142,6 +132,22 @@ public class Main implements SniperListener {
             } catch (XmppStringprepException|SmackException.NotConnectedException|InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public class SniperStateDisplayer implements SniperListener {
+        @Override
+        public void sniperLost() {
+            showStatus(MainWindow.STATUS_LOST);
+        }
+
+        @Override
+        public void sniperBidding() {
+            showStatus(MainWindow.STATUS_BIDDING);
+        }
+
+        private void showStatus(final String status) {
+            SwingUtilities.invokeLater(() -> ui.showStatus(status));
         }
     }
 }

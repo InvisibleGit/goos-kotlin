@@ -323,3 +323,9 @@ We're finishing the chapter with three little steps:
 
 Cleaning up `joinAuction()` method with small changes in implementation of
 XMPPAuction because of Smack API, and thus our, differences.
+
+
+##### Commit 2 - Extracting the User Interface
+
+The only difference is that we don't implement `snipperWinning()`, since we
+haven't started working on the next end-to-end test (which is the next chapter).
