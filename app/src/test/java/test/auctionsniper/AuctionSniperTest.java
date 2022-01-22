@@ -5,6 +5,7 @@ import auctionsniper.AuctionEventListener.PriceSource;
 import auctionsniper.AuctionSniper;
 import auctionsniper.SniperListener;
 import org.junit.Test;
+import org.mockito.InOrder;
 
 import static org.mockito.Mockito.*;
 
@@ -16,9 +17,21 @@ public class AuctionSniperTest {
 
 
     @Test
-    public void reportsLostWhenAuctionCloses() {
+    public void reportsLostWhenAuctionClosesImmediately() {
         sniper.auctionClosed();
 
+        verify(sniperListener, times(1)).sniperLost();
+        verifyNoMoreInteractions(sniperListener);
+    }
+
+    @Test
+    public void reportsLostIfAuctionClosesWhenBidding() {
+        sniper.currentPrice(123, 45, PriceSource.FromOtherBidder);
+        sniper.auctionClosed();
+
+        InOrder inOrder = inOrder(sniperListener);
+        inOrder.verify(sniperListener).sniperBidding();
+        inOrder.verify(sniperListener, never()).sniperWinning();
         verify(sniperListener, times(1)).sniperLost();
     }
 

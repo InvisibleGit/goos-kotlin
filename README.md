@@ -354,3 +354,12 @@ Apart from adding `snipperWinning()` in `SniperStateDisplayer` which was hinted
 on p.134, but we skipped in previous chapter's step 03, commit 2 (since it wasn't
 relevant at a time), we simply follow through the text and now have an additional
 passing unit test + we're one step closer to passing end-to-end test!
+
+
+#### Step 04 - The Sniper Acquires Some State
+
+We diverge here since we're not using jMock2 but Mockito. Though authors want strict
+testing, and use jMock's `States` to track the state of `AuctionSniper` by listening
+to `SniperListener`, we do it with Mockito's `InOrder` verification.
+
+This is probably not great substitute, but good enough...
