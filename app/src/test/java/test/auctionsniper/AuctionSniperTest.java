@@ -52,4 +52,14 @@ public class AuctionSniperTest {
 
         verify(sniperListener).sniperWinning();
     }
+
+    @Test
+    public void reportsWonIfAuctionClosesWhenWinning() {
+        sniper.currentPrice(123, 45, PriceSource.FromSniper);
+        sniper.auctionClosed();
+
+        InOrder inOrder = inOrder(sniperListener);
+        inOrder.verify(sniperListener).sniperWinning();
+        inOrder.verify(sniperListener).sniperWon();
+    }
 }

@@ -363,3 +363,11 @@ testing, and use jMock's `States` to track the state of `AuctionSniper` by liste
 to `SniperListener`, we do it with Mockito's `InOrder` verification.
 
 This is probably not great substitute, but good enough...
+
+
+#### Step 05 - The Sniper Wins
+
+Finalizing the chapter with another unit test.
+
+Then we implement `showsSniperHasWonAuction()` in `ApplicationRunner` and we have a
+passing end-to-end test.

@@ -15,7 +15,6 @@ import org.assertj.swing.launcher.ApplicationLauncher;
 import org.assertj.swing.fixture.FrameFixture;
 
 import static org.assertj.swing.timing.Pause.pause;
-import static org.junit.Assert.fail;
 
 import org.assertj.swing.timing.Condition;
 
@@ -50,7 +49,7 @@ public class ApplicationRunner {
     }
 
     public void showsSniperHasWonAuction() {
-        fail("not implemented");
+        showsSniperStatus(MainWindow.STATUS_WON);
     }
 
     private void showsSniperStatus(String statusText) {
