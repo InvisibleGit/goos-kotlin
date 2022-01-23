@@ -371,3 +371,15 @@ Finalizing the chapter with another unit test.
 
 Then we implement `showsSniperHasWonAuction()` in `ApplicationRunner` and we have a
 passing end-to-end test.
+
+
+### Chapter 15
+
+Chapter which substitutes JLabel with JTable for showing more information about auction.
+
+
+#### Step 01 - Replacing JLabel
+
+Simple change where we replace JLabel with single cell JTable and update the logic of
+tests to look for that cell. Of course it's a bit different in _AssertJ Swing_ then in
+_WindowLicker_, but nothing too confusing.

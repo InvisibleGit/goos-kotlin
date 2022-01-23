@@ -6,10 +6,11 @@ import static auctionsniper.CustomMatchers.getMainFrameByName;
 import static auctionsniper.FakeAuctionServer.XMPP_HOSTNAME;
 
 import static auctionsniper.Main.AUCTION_RESOURCE;
-import static auctionsniper.ui.MainWindow.SNIPER_STATUS_NAME;
+import static auctionsniper.ui.MainWindow.SNIPERS_TABLE_NAME;
 
 import org.assertj.swing.core.BasicRobot;
 import org.assertj.swing.core.Robot;
+import org.assertj.swing.data.TableCell;
 import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.launcher.ApplicationLauncher;
 import org.assertj.swing.fixture.FrameFixture;
@@ -33,7 +34,7 @@ public class ApplicationRunner {
         window = WindowFinder.findFrame(getMainFrameByName(MainWindow.MAIN_WINDOW_NAME)).using(robot);
         window.focus();
 
-        window.label(SNIPER_STATUS_NAME).requireText(MainWindow.STATUS_JOINING);
+        window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(0)).requireValue(MainWindow.STATUS_JOINING);
     }
 
     public void showsSniperHasLostAuction() {
@@ -58,7 +59,7 @@ public class ApplicationRunner {
 
             @Override
             public boolean test() {
-                foundValue = window.label(SNIPER_STATUS_NAME).text();
+                foundValue = window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(0)).value();
 
                 if (foundValue.equals(statusText))
                     return true;
