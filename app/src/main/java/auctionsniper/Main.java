@@ -57,7 +57,7 @@ public class Main {
         Auction auction = new XMPPAuction(connection, itemId);
         translator = new AuctionMessageTranslator(
             connection.getUser().toString(),
-            new AuctionSniper(auction, new SniperStateDisplayer())
+            new AuctionSniper(itemId, auction, new SniperStateDisplayer())
         );
         auction.join();
     }
@@ -145,7 +145,7 @@ public class Main {
         }
 
         @Override
-        public void sniperBidding() {
+        public void sniperBidding(final SniperState state) {
             showStatus(MainWindow.STATUS_BIDDING);
         }
 

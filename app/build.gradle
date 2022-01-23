@@ -23,6 +23,8 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-tcp:4.4.4"
     implementation "org.igniterealtime.smack:smack-extensions:4.4.4"
 
+    implementation "org.apache.commons:commons-lang3:3.12.0"
+
     testImplementation "org.assertj:assertj-core:3.22.0"
     testImplementation "org.assertj:assertj-swing-junit:3.17.1"
     testImplementation "org.mockito:mockito-core:4.2.0"

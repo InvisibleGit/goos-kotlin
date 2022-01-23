@@ -405,3 +405,13 @@ importantly, `ApplicationRunner` to now search inside JTable, reaching understan
 fail message.
 
 Again we need to tweak out approach to AssertJ Swing but that's easy enough.
+
+
+##### Commit 2 - Sending the State out of the Sniper
+
+Main point here is that we're creating `SniperState` class. Text mentions they're using
+Apache's Common Lang helpers, though they don't show how. Thus, we add this dependency in
+gradle, and implement simplest `equals()`, `hashCode()` and `toString()` with it.
+
+After we have `SniperState` value object, we modify
+`AuctionSniperTest.bidsHigherAndReportsBiddingWhenNewPriceArrives()`

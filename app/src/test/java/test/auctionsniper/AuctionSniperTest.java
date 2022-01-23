@@ -4,6 +4,7 @@ import auctionsniper.Auction;
 import auctionsniper.AuctionEventListener.PriceSource;
 import auctionsniper.AuctionSniper;
 import auctionsniper.SniperListener;
+import auctionsniper.SniperState;
 import org.junit.Test;
 import org.mockito.InOrder;
 
@@ -11,9 +12,11 @@ import static org.mockito.Mockito.*;
 
 
 public class AuctionSniperTest {
+    private final String ITEM_ID = "item-54321";
+
     private final SniperListener sniperListener = mock(SniperListener.class);
     private final Auction auction = mock(Auction.class);
-    private final AuctionSniper sniper = new AuctionSniper(auction, sniperListener);
+    private final AuctionSniper sniper = new AuctionSniper(ITEM_ID, auction, sniperListener);
 
 
     @Test
@@ -30,7 +33,7 @@ public class AuctionSniperTest {
         sniper.auctionClosed();
 
         InOrder inOrder = inOrder(sniperListener);
-        inOrder.verify(sniperListener).sniperBidding();
+        inOrder.verify(sniperListener).sniperBidding(any(SniperState.class));
         inOrder.verify(sniperListener, never()).sniperWinning();
         verify(sniperListener, times(1)).sniperLost();
     }
@@ -39,11 +42,12 @@ public class AuctionSniperTest {
     public void bidsHigherAndReportsBiddingWhenNewPriceArrives() {
         final int price = 1001;
         final int increment = 25;
+        final int bid = price + increment;
 
         sniper.currentPrice(price, increment, PriceSource.FromOtherBidder);
 
-        verify(auction, times(1)).bid(price + increment);
-        verify(sniperListener).sniperBidding();
+        verify(auction, times(1)).bid(bid);
+        verify(sniperListener).sniperBidding(new SniperState(ITEM_ID, price, bid));
     }
 
     @Test
