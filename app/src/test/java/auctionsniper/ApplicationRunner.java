@@ -16,8 +16,11 @@ import org.assertj.swing.launcher.ApplicationLauncher;
 import org.assertj.swing.fixture.FrameFixture;
 
 import static org.assertj.swing.timing.Pause.pause;
+import static org.junit.Assert.fail;
 
 import org.assertj.swing.timing.Condition;
+
+import java.util.Arrays;
 
 
 public class ApplicationRunner {
@@ -27,8 +30,12 @@ public class ApplicationRunner {
 
     private FrameFixture window;
 
+    private String itemId;
+
     public void startBiddingIn(final FakeAuctionServer auction) {
-        ApplicationLauncher.application(Main.class).withArgs(XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD, auction.getItemId()).start();
+        itemId = auction.getItemId();
+
+        ApplicationLauncher.application(Main.class).withArgs(XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD, itemId).start();
 
         Robot robot = BasicRobot.robotWithCurrentAwtHierarchy();
         window = WindowFinder.findFrame(getMainFrameByName(MainWindow.MAIN_WINDOW_NAME)).using(robot);
@@ -38,33 +45,35 @@ public class ApplicationRunner {
     }
 
     public void showsSniperHasLostAuction() {
-        showsSniperStatus(MainWindow.STATUS_LOST);
+        fail("fix me"); // was: showsSniperStatus(MainWindow.STATUS_LOST);
     }
 
-    public void hasShownSniperIsBidding() {
-        showsSniperStatus(MainWindow.STATUS_BIDDING);
+    public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
+        showsSniperStatus(itemId, lastPrice, lastBid, MainWindow.STATUS_BIDDING);
     }
 
-    public void hasShownSniperIsWinning() {
-        showsSniperStatus(MainWindow.STATUS_WINNING);
+    public void hasShownSniperIsWinning(int winningBid) {
+        showsSniperStatus(itemId, winningBid, winningBid, MainWindow.STATUS_WINNING);
     }
 
-    public void showsSniperHasWonAuction() {
-        showsSniperStatus(MainWindow.STATUS_WON);
+    public void showsSniperHasWonAuction(int lastPrice) {
+        showsSniperStatus(itemId, lastPrice, lastPrice, MainWindow.STATUS_WON);
     }
 
-    private void showsSniperStatus(String statusText) {
-        pause(new Condition(String.format("sniper status text to change to: \"%s\"", statusText)) {
+    private void showsSniperStatus(String itemId, int lastPrice, int lastBid, String statusText) {
+        pause(new Condition(String.format("sniper table row text to change to: [%s, %d, %d, %s]", itemId, lastPrice, lastBid, statusText)) {
             String foundValue = EMPTY_TEXT;
 
             @Override
             public boolean test() {
-                foundValue = window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(0)).value();
+                String[][] tableContents = window.table(SNIPERS_TABLE_NAME).contents();
 
-                if (foundValue.equals(statusText))
-                    return true;
+                if (Arrays.deepEquals(tableContents, new String[][] {
+                    { itemId, Integer.toString(lastPrice), Integer.toString(lastBid), statusText }
+                })) return true;
 
-                return false; // will append #descriptionAddendum()
+                foundValue = String.format("%s", Arrays.toString(tableContents[0]));
+                return false;
             }
 
             @Override

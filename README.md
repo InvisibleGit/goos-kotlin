@@ -383,3 +383,25 @@ Chapter which substitutes JLabel with JTable for showing more information about 
 Simple change where we replace JLabel with single cell JTable and update the logic of
 tests to look for that cell. Of course it's a bit different in _AssertJ Swing_ then in
 _WindowLicker_, but nothing too confusing.
+
+
+#### Step 02 - Displaying Price Details
+
+Concentrating on testing bidding event in end-to-end tests, we move through this step
+with a couple of commits to catch all the changes in the codebase.
+
+
+##### Commit 1 - First, a Failing Test
+
+Changes in this commit will void end-to-end tests but they'll be fixed in the following steps
+of the chapter.
+
+Most notably, text doesn't mention how to update `showsSniperHasLostAuction()`. Because
+of that, we'll replace its implementation with: `fail("fix me");` to know we need to
+resolve it. We'll return and fix it in Step 04 - Follow Through.
+
+Next, we update the `auctionSniper.sniperWinsAnAuctionByBiddingHigher()` and more
+importantly, `ApplicationRunner` to now search inside JTable, reaching understandable
+fail message.
+
+Again we need to tweak out approach to AssertJ Swing but that's easy enough.
