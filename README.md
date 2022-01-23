@@ -415,3 +415,25 @@ gradle, and implement simplest `equals()`, `hashCode()` and `toString()` with it
 
 After we have `SniperState` value object, we modify
 `AuctionSniperTest.bidsHigherAndReportsBiddingWhenNewPriceArrives()`
+
+
+##### Commit 3 - Showing a bidding sniper
+
+Now we have auction information in four cells of JTable. Couple of notes about
+this commit:
+
+- In `SnipersTableModelTest.setsSniperValuesInColumns()` we just test that
+  `tableChanged()` was called on `listener` ignoring `TableModelEvent` arguments.
+
+  In theory Hamcrest's `samePropertyValuesAs()` could've been replaced with
+  Mockito's `refEq()` as described in [Mockito equivalent to this Hamcrest "samePropertyValuesAs"/jMock "with" idiom?](https://stackoverflow.com/a/39930882),
+  yet, in practice, it didn't work for unknown reason and fallback is good enough.
+- We also needed to update  `ApplicationRunner.startBiddingIn()` to look in
+  `Column.SNIPER_STATUS` cell for status value. This change was necessary
+  because of differences in testing libraries.
+
+At this point we've reached the same error stage in the book with `sniperWinsAnAuctionByBiddingHigher()`
+end-to-end test failing as expected.
+
+The other two end-to-end tests are failing with `"fix me"` error, and that will be
+resolved soon as already noted.
