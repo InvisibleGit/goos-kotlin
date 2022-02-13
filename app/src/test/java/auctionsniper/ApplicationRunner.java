@@ -42,7 +42,7 @@ public class ApplicationRunner {
         window = WindowFinder.findFrame(getMainFrameByName(MainWindow.MAIN_WINDOW_NAME)).using(robot);
         window.focus();
 
-        window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(Column.SNIPER_STATUS.ordinal())).requireValue(MainWindow.STATUS_JOINING);
+        window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(Column.SNIPER_STATE.ordinal())).requireValue(MainWindow.STATUS_JOINING);
     }
 
     public void showsSniperHasLostAuction() {

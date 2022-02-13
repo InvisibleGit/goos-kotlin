@@ -1,6 +1,6 @@
 package test.auctionsniper;
 
-import auctionsniper.SniperState;
+import auctionsniper.SniperSnapshot;
 import auctionsniper.ui.Column;
 import auctionsniper.ui.MainWindow;
 import auctionsniper.ui.MainWindow.SnipersTableModel;
@@ -32,12 +32,12 @@ public class SnipersTableModelTest {
 
     @Test
     public void setsSniperValuesInColumns() {
-        model.sniperStatusChanged(new SniperState("item id", 555, 666), MainWindow.STATUS_BIDDING);
+        model.sniperStatusChanged(new SniperSnapshot("item id", 555, 666), MainWindow.STATUS_BIDDING);
 
         assertColumnEquals(Column.ITEM_IDENTIFIER, "item id");
         assertColumnEquals(Column.LAST_PRICE, 555);
         assertColumnEquals(Column.LAST_BID, 666);
-        assertColumnEquals(Column.SNIPER_STATUS, MainWindow.STATUS_BIDDING);
+        assertColumnEquals(Column.SNIPER_STATE, MainWindow.STATUS_BIDDING);
 
         verify(listener).tableChanged(any(TableModelEvent.class));
     }

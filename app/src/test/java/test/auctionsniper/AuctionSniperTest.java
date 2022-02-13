@@ -4,7 +4,7 @@ import auctionsniper.Auction;
 import auctionsniper.AuctionEventListener.PriceSource;
 import auctionsniper.AuctionSniper;
 import auctionsniper.SniperListener;
-import auctionsniper.SniperState;
+import auctionsniper.SniperSnapshot;
 import org.junit.Test;
 import org.mockito.InOrder;
 
@@ -33,7 +33,7 @@ public class AuctionSniperTest {
         sniper.auctionClosed();
 
         InOrder inOrder = inOrder(sniperListener);
-        inOrder.verify(sniperListener).sniperBidding(any(SniperState.class));
+        inOrder.verify(sniperListener).sniperBidding(any(SniperSnapshot.class));
         inOrder.verify(sniperListener, never()).sniperWinning();
         verify(sniperListener, times(1)).sniperLost();
     }
@@ -47,7 +47,7 @@ public class AuctionSniperTest {
         sniper.currentPrice(price, increment, PriceSource.FromOtherBidder);
 
         verify(auction, times(1)).bid(bid);
-        verify(sniperListener).sniperBidding(new SniperState(ITEM_ID, price, bid));
+        verify(sniperListener).sniperBidding(new SniperSnapshot(ITEM_ID, price, bid));
     }
 
     @Test

@@ -1,6 +1,6 @@
 package auctionsniper.ui;
 
-import auctionsniper.SniperState;
+import auctionsniper.SniperSnapshot;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -45,14 +45,14 @@ public class MainWindow extends JFrame {
         snipers.setStatusText(statusText);
     }
 
-    public void sniperStatusChanged(SniperState sniperState, String statusText) {
-        snipers.sniperStatusChanged(sniperState, statusText);
+    public void sniperStatusChanged(SniperSnapshot snapshot, String statusText) {
+        snipers.sniperStatusChanged(snapshot, statusText);
     }
 
     public static class SnipersTableModel extends AbstractTableModel {
-        private final static SniperState STARTING_UP = new SniperState("", 0, 0);
+        private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0);
         private String statusText = STATUS_JOINING;
-        private SniperState sniperState = STARTING_UP;
+        private SniperSnapshot snapshot = STARTING_UP;
 
         @Override
         public int getRowCount() {
@@ -65,10 +65,10 @@ public class MainWindow extends JFrame {
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             switch (Column.at(columnIndex)) {
-                case ITEM_IDENTIFIER: return sniperState.itemId;
-                case LAST_PRICE: return sniperState.lastPrice;
-                case LAST_BID: return sniperState.lastBid;
-                case SNIPER_STATUS: return statusText;
+                case ITEM_IDENTIFIER: return snapshot.itemId;
+                case LAST_PRICE: return snapshot.lastPrice;
+                case LAST_BID: return snapshot.lastBid;
+                case SNIPER_STATE: return statusText;
                 default:
                     throw new IllegalArgumentException("No column at " + columnIndex);
             }
@@ -79,8 +79,8 @@ public class MainWindow extends JFrame {
             fireTableRowsUpdated(0, 0);
         }
 
-        public void sniperStatusChanged(SniperState newSniperState, String newStatusText) {
-            sniperState = newSniperState;
+        public void sniperStatusChanged(SniperSnapshot snapshot, String newStatusText) {
+            this.snapshot = snapshot;
             statusText = newStatusText;
             fireTableRowsUpdated(0, 0);
         }

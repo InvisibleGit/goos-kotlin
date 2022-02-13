@@ -437,3 +437,14 @@ end-to-end test failing as expected.
 
 The other two end-to-end tests are failing with `"fix me"` error, and that will be
 resolved soon as already noted.
+
+
+#### Step 03 - Simplifying Sniper Events
+
+Text rushes through changes, often completely skipping changes by merely mentioning them.
+
+
+##### Commit 1 - Listening to the Mood Music
+
+Just finding better names. Since it touches a bunch of files, we'll put it in a separate
+commit.
