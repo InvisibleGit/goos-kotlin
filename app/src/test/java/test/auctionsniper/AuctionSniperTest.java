@@ -1,14 +1,13 @@
 package test.auctionsniper;
 
-import auctionsniper.Auction;
+import auctionsniper.*;
 import auctionsniper.AuctionEventListener.PriceSource;
-import auctionsniper.AuctionSniper;
-import auctionsniper.SniperListener;
-import auctionsniper.SniperSnapshot;
 import org.junit.Test;
 import org.mockito.InOrder;
 
 import static org.mockito.Mockito.*;
+
+import static auctionsniper.CustomMatchers.isStateOf;
 
 
 public class AuctionSniperTest {
@@ -33,7 +32,7 @@ public class AuctionSniperTest {
         sniper.auctionClosed();
 
         InOrder inOrder = inOrder(sniperListener);
-        inOrder.verify(sniperListener).sniperBidding(any(SniperSnapshot.class));
+        inOrder.verify(sniperListener).sniperStateChanged(argThat(isStateOf(SniperState.BIDDING)));
         inOrder.verify(sniperListener, never()).sniperWinning();
         verify(sniperListener, times(1)).sniperLost();
     }
@@ -47,7 +46,7 @@ public class AuctionSniperTest {
         sniper.currentPrice(price, increment, PriceSource.FromOtherBidder);
 
         verify(auction, times(1)).bid(bid);
-        verify(sniperListener).sniperBidding(new SniperSnapshot(ITEM_ID, price, bid));
+        verify(sniperListener).sniperStateChanged(new SniperSnapshot(ITEM_ID, price, bid, SniperState.BIDDING));
     }
 
     @Test

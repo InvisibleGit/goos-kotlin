@@ -448,3 +448,18 @@ Text rushes through changes, often completely skipping changes by merely mention
 
 Just finding better names. Since it touches a bunch of files, we'll put it in a separate
 commit.
+
+
+##### Commit 2 - Repurposing sniperBidding()
+
+First, we introduce `SniperState` enum and related refactorings. Then we modify
+`sniperBidding()` method and given that it's more generic it's renamed to
+`sniperStateChanged()`.
+
+We also created another custom matcher similar to book's `aSniperThatIs()` on p.161. It's
+an ArgumentMatcher implementation for testing `SniperState` inside `SniperSnapshot` and
+we created a helper static method called `isStateOf()` so that the `AuctionSniperTest`
+reads nicely with our testing framework.
+
+Of note is that `MainWindow.sniperStatusChanged()` changed name to `MainWindow.sniperStateChanged()`
+somewhere between pages p.156 and p.167 code listings. So we assume it happened here.

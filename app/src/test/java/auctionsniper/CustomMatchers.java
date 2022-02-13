@@ -1,6 +1,8 @@
 package auctionsniper;
 
 import org.assertj.swing.core.GenericTypeMatcher;
+import org.mockito.ArgumentMatcher;
+
 import javax.swing.*;
 
 
@@ -21,5 +23,26 @@ public class CustomMatchers {
                 return "getMainFrameByName: " + frameName;
             }
         };
+    }
+
+    public static SniperStateMatcher isStateOf(SniperState wantedState) {
+        return new SniperStateMatcher(wantedState);
+    }
+
+    static class SniperStateMatcher implements ArgumentMatcher<SniperSnapshot> {
+        private final SniperState wantedState;
+        private SniperState foundState;
+
+        SniperStateMatcher(SniperState wantedState) {
+            this.wantedState = wantedState;
+        }
+
+        public boolean matches(SniperSnapshot snapshot) {
+            foundState = snapshot.state;
+            return snapshot.state.equals(wantedState);
+        }
+        public String toString() {
+            return "wanted snapshot with state: " + wantedState + ", but was: " + foundState;
+        }
     }
 }

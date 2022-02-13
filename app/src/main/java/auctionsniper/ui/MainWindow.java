@@ -1,6 +1,7 @@
 package auctionsniper.ui;
 
 import auctionsniper.SniperSnapshot;
+import auctionsniper.SniperState;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -42,17 +43,19 @@ public class MainWindow extends JFrame {
     }
 
     public void showStatus(final String statusText) {
-        snipers.setStatusText(statusText);
+        snipers.setStatus(statusText);
     }
 
-    public void sniperStatusChanged(SniperSnapshot snapshot, String statusText) {
-        snipers.sniperStatusChanged(snapshot, statusText);
+    public void sniperStateChanged(SniperSnapshot snapshot) {
+        snipers.sniperStateChanged(snapshot);
     }
 
     public static class SnipersTableModel extends AbstractTableModel {
-        private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0);
-        private String statusText = STATUS_JOINING;
+        private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0, SniperState.JOINING);
+        private String state = STATUS_TEXT[SniperState.JOINING.ordinal()];
         private SniperSnapshot snapshot = STARTING_UP;
+        private static String[] STATUS_TEXT = { MainWindow.STATUS_JOINING,
+                                                MainWindow.STATUS_BIDDING };
 
         @Override
         public int getRowCount() {
@@ -68,20 +71,20 @@ public class MainWindow extends JFrame {
                 case ITEM_IDENTIFIER: return snapshot.itemId;
                 case LAST_PRICE: return snapshot.lastPrice;
                 case LAST_BID: return snapshot.lastBid;
-                case SNIPER_STATE: return statusText;
+                case SNIPER_STATE: return state;
                 default:
                     throw new IllegalArgumentException("No column at " + columnIndex);
             }
         }
 
-        public void setStatusText(String newStatusText) {
-            this.statusText = newStatusText;
+        public void setStatus(String newStatusText) {
+            this.state = newStatusText;
             fireTableRowsUpdated(0, 0);
         }
 
-        public void sniperStatusChanged(SniperSnapshot snapshot, String newStatusText) {
-            this.snapshot = snapshot;
-            statusText = newStatusText;
+        public void sniperStateChanged(SniperSnapshot newSnapshot) {
+            this.snapshot = newSnapshot;
+            this.state = STATUS_TEXT[newSnapshot.state.ordinal()];
             fireTableRowsUpdated(0, 0);
         }
     }
