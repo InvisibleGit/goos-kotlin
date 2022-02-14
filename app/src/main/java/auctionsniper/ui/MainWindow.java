@@ -55,7 +55,8 @@ public class MainWindow extends JFrame {
         private String state = STATUS_TEXT[SniperState.JOINING.ordinal()];
         private SniperSnapshot snapshot = STARTING_UP;
         private static String[] STATUS_TEXT = { MainWindow.STATUS_JOINING,
-                                                MainWindow.STATUS_BIDDING };
+                                                MainWindow.STATUS_BIDDING,
+                                                MainWindow.STATUS_WINNING };
 
         @Override
         public int getRowCount() {

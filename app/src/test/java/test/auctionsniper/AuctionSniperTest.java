@@ -33,7 +33,7 @@ public class AuctionSniperTest {
 
         InOrder inOrder = inOrder(sniperListener);
         inOrder.verify(sniperListener).sniperStateChanged(argThat(isStateOf(SniperState.BIDDING)));
-        inOrder.verify(sniperListener, never()).sniperWinning();
+        inOrder.verify(sniperListener, never()).sniperStateChanged(argThat(isStateOf(SniperState.WINNING)));
         verify(sniperListener, times(1)).sniperLost();
     }
 
@@ -51,9 +51,12 @@ public class AuctionSniperTest {
 
     @Test
     public void reportsIsWinningWhenCurrentPriceComesFromSniper() {
-        sniper.currentPrice(123, 45, PriceSource.FromSniper);
+        sniper.currentPrice(123, 12, PriceSource.FromOtherBidder);
+        sniper.currentPrice(135, 45, PriceSource.FromSniper);
 
-        verify(sniperListener).sniperWinning();
+        InOrder inOrder = inOrder(sniperListener);
+        inOrder.verify(sniperListener).sniperStateChanged(argThat(isStateOf(SniperState.BIDDING)));
+        inOrder.verify(sniperListener).sniperStateChanged(argThat(isStateOf(SniperState.WINNING)));
     }
 
     @Test
@@ -62,7 +65,7 @@ public class AuctionSniperTest {
         sniper.auctionClosed();
 
         InOrder inOrder = inOrder(sniperListener);
-        inOrder.verify(sniperListener).sniperWinning();
+        inOrder.verify(sniperListener).sniperStateChanged(argThat(isStateOf(SniperState.WINNING)));
         inOrder.verify(sniperListener).sniperWon();
     }
 }

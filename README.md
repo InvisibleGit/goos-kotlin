@@ -463,3 +463,16 @@ reads nicely with our testing framework.
 
 Of note is that `MainWindow.sniperStatusChanged()` changed name to `MainWindow.sniperStateChanged()`
 somewhere between pages p.156 and p.167 code listings. So we assume it happened here.
+
+
+##### Commit 3 - Filling In the Numbers
+
+This commit is basically converting `sniperWinning()` to the new `sniperStateChanged()` we
+did in previous one.
+
+We need to make changes to `ActionSniperTest`, the `ActionSniper` itself, `SniperSnapshoot`
+and delete references to `sniperWinning()` with further refactorings of existing unit tests.
+
+We also added `MainWindow.STATUS_WINNING` to `STATUS_TEXT` in `SnipersTableModel`.
+
+With that, our target end-to-end test now passes. Two more to go...
