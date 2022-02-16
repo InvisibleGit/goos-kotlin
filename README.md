@@ -492,3 +492,14 @@ the code.
 Text also mentions that they've used `SniperStateTests` and `Defect` classes, but they're not shown
 in the book. We found them in the books repository. Though that codebase contains only final code
 of the book, we're able to augment missing information from the text that way.
+
+
+##### Commit 2 - Fixing showsSniperHasLostAuction()
+
+Deviating from the book with just a simple commit, to revisit the broken `fix me` end-to-end tests.
+
+Now that we completely converted `SniperListener` and we're updating the table cells, we simply
+reuse the logic we had when we converted JLabel to JTable at the beginning of the chapter,
+and just look at the last column of the single row, expecting it to contain `MainWindow.STATUS_LOST`.
+
+With that, now all tests are green!

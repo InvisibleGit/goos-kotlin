@@ -17,7 +17,6 @@ import org.assertj.swing.launcher.ApplicationLauncher;
 import org.assertj.swing.fixture.FrameFixture;
 
 import static org.assertj.swing.timing.Pause.pause;
-import static org.junit.Assert.fail;
 
 import org.assertj.swing.timing.Condition;
 
@@ -46,7 +45,7 @@ public class ApplicationRunner {
     }
 
     public void showsSniperHasLostAuction() {
-        fail("fix me"); // was: showsSniperStatus(MainWindow.STATUS_LOST);
+        window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(Column.SNIPER_STATE.ordinal())).requireValue(MainWindow.STATUS_LOST);
     }
 
     public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
