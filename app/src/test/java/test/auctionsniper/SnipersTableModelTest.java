@@ -12,6 +12,7 @@ import javax.swing.event.TableModelListener;
 import org.junit.Before;
 import org.junit.Test;
 
+import static auctionsniper.ui.MainWindow.SnipersTableModel.textFor;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -38,7 +39,7 @@ public class SnipersTableModelTest {
         assertColumnEquals(Column.ITEM_IDENTIFIER, "item id");
         assertColumnEquals(Column.LAST_PRICE, 555);
         assertColumnEquals(Column.LAST_BID, 666);
-        assertColumnEquals(Column.SNIPER_STATE, MainWindow.STATUS_BIDDING);
+        assertColumnEquals(Column.SNIPER_STATE, textFor(SniperState.BIDDING));
 
         verify(listener).tableChanged(any(TableModelEvent.class));
     }

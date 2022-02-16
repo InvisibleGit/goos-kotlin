@@ -503,3 +503,10 @@ reuse the logic we had when we converted JLabel to JTable at the beginning of th
 and just look at the last column of the single row, expecting it to contain `MainWindow.STATUS_LOST`.
 
 With that, now all tests are green!
+
+
+##### Commit 3 - Trimming the Table Model
+
+We've already cleaned up the code base related to `setStatusText()` in Commit 1, so we're just
+continuing to remove description strings from MainWindow into SnipersTableModel and update the
+tests to reflect that.

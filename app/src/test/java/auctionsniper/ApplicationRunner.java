@@ -3,6 +3,8 @@ package auctionsniper;
 import auctionsniper.ui.Column;
 import auctionsniper.ui.MainWindow;
 
+import static auctionsniper.ui.MainWindow.SnipersTableModel.textFor;
+
 import static auctionsniper.CustomMatchers.getMainFrameByName;
 import static auctionsniper.FakeAuctionServer.XMPP_HOSTNAME;
 
@@ -41,23 +43,23 @@ public class ApplicationRunner {
         window = WindowFinder.findFrame(getMainFrameByName(MainWindow.MAIN_WINDOW_NAME)).using(robot);
         window.focus();
 
-        window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(Column.SNIPER_STATE.ordinal())).requireValue(MainWindow.STATUS_JOINING);
+        window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(Column.SNIPER_STATE.ordinal())).requireValue(textFor(SniperState.JOINING));
     }
 
     public void showsSniperHasLostAuction() {
-        window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(Column.SNIPER_STATE.ordinal())).requireValue(MainWindow.STATUS_LOST);
+        window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(Column.SNIPER_STATE.ordinal())).requireValue(textFor(SniperState.LOST));
     }
 
     public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
-        showsSniperStatus(itemId, lastPrice, lastBid, MainWindow.STATUS_BIDDING);
+        showsSniperStatus(itemId, lastPrice, lastBid, textFor(SniperState.BIDDING));
     }
 
     public void hasShownSniperIsWinning(int winningBid) {
-        showsSniperStatus(itemId, winningBid, winningBid, MainWindow.STATUS_WINNING);
+        showsSniperStatus(itemId, winningBid, winningBid, textFor(SniperState.WINNING));
     }
 
     public void showsSniperHasWonAuction(int lastPrice) {
-        showsSniperStatus(itemId, lastPrice, lastPrice, MainWindow.STATUS_WON);
+        showsSniperStatus(itemId, lastPrice, lastPrice, textFor(SniperState.WON));
     }
 
     private void showsSniperStatus(String itemId, int lastPrice, int lastBid, String statusText) {

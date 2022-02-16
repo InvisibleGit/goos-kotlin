@@ -12,12 +12,6 @@ public class MainWindow extends JFrame {
     public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
     public static final String SNIPERS_TABLE_NAME = "Snipers Table";
 
-    public static final String STATUS_JOINING = "Joining";
-    public static final String STATUS_LOST = "Lost";
-    public static final String STATUS_BIDDING = "Bidding";
-    public static final String STATUS_WINNING = "Winning";
-    public static final String STATUS_WON = "Won";
-
     private final SnipersTableModel snipers = new SnipersTableModel();
 
     public MainWindow() {
@@ -49,13 +43,8 @@ public class MainWindow extends JFrame {
 
     public static class SnipersTableModel extends AbstractTableModel {
         private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0, SniperState.JOINING);
-        private String state = STATUS_TEXT[SniperState.JOINING.ordinal()];
         private SniperSnapshot snapshot = STARTING_UP;
-        private static String[] STATUS_TEXT = { MainWindow.STATUS_JOINING,
-                                                MainWindow.STATUS_BIDDING,
-                                                MainWindow.STATUS_WINNING,
-                                                MainWindow.STATUS_LOST,
-                                                MainWindow.STATUS_WON };
+        private final static String[] STATUS_TEXT = { "Joining", "Bidding", "Winning", "Lost", "Won" };
 
         @Override
         public int getRowCount() {
@@ -71,7 +60,7 @@ public class MainWindow extends JFrame {
                 case ITEM_IDENTIFIER: return snapshot.itemId;
                 case LAST_PRICE: return snapshot.lastPrice;
                 case LAST_BID: return snapshot.lastBid;
-                case SNIPER_STATE: return state;
+                case SNIPER_STATE: return textFor(snapshot.state);
                 default:
                     throw new IllegalArgumentException("No column at " + columnIndex);
             }
@@ -79,8 +68,11 @@ public class MainWindow extends JFrame {
 
         public void sniperStateChanged(SniperSnapshot newSnapshot) {
             this.snapshot = newSnapshot;
-            this.state = STATUS_TEXT[newSnapshot.state.ordinal()];
             fireTableRowsUpdated(0, 0);
+        }
+
+        public static String textFor(SniperState state) {
+            return STATUS_TEXT[state.ordinal()];
         }
     }
 }
