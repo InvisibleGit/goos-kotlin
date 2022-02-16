@@ -510,3 +510,17 @@ With that, now all tests are green!
 We've already cleaned up the code base related to `setStatusText()` in Commit 1, so we're just
 continuing to remove description strings from MainWindow into SnipersTableModel and update the
 tests to reflect that.
+
+
+##### Commit 4 - Object-Oriented Column
+
+Though the text mentions updating test code, it doesn't show what they did. So we change
+`startBiddingIn()` method to expect empty string for `itemId` and `0` for `lastPrice` and
+`lastBid` when checking for joining status. As for `showsSniperHasLostAuction()`, since it's
+used by `sniperMakesAHigherBidButLoses()` *and* `sniperJoinsAuctionUntilAuctionCloses()`, yet
+those two have different expectations for `lastPrice` and `lastBid`, so we've added those as
+parameters to reflect that. Now all test code is checking for equality in all columns of
+the JTable.
+
+Then we've updated `Column` class to avoid switch statement... and pull mentioned unit test
+from final code of the book, like we did in Commit 1.

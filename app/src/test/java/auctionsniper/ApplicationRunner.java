@@ -1,6 +1,5 @@
 package auctionsniper;
 
-import auctionsniper.ui.Column;
 import auctionsniper.ui.MainWindow;
 
 import static auctionsniper.ui.MainWindow.SnipersTableModel.textFor;
@@ -13,7 +12,6 @@ import static auctionsniper.ui.MainWindow.SNIPERS_TABLE_NAME;
 
 import org.assertj.swing.core.BasicRobot;
 import org.assertj.swing.core.Robot;
-import org.assertj.swing.data.TableCell;
 import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.launcher.ApplicationLauncher;
 import org.assertj.swing.fixture.FrameFixture;
@@ -43,11 +41,11 @@ public class ApplicationRunner {
         window = WindowFinder.findFrame(getMainFrameByName(MainWindow.MAIN_WINDOW_NAME)).using(robot);
         window.focus();
 
-        window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(Column.SNIPER_STATE.ordinal())).requireValue(textFor(SniperState.JOINING));
+        showsSniperStatus("", 0, 0, textFor(SniperState.JOINING));
     }
 
-    public void showsSniperHasLostAuction() {
-        window.table(SNIPERS_TABLE_NAME).cell(TableCell.row(0).column(Column.SNIPER_STATE.ordinal())).requireValue(textFor(SniperState.LOST));
+    public void showsSniperHasLostAuction(int lastPrice, int lastBid) {
+        showsSniperStatus(itemId, lastPrice, lastBid, textFor(SniperState.LOST));
     }
 
     public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
