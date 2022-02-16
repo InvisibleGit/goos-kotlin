@@ -476,3 +476,19 @@ and delete references to `sniperWinning()` with further refactorings of existing
 We also added `MainWindow.STATUS_WINNING` to `STATUS_TEXT` in `SnipersTableModel`.
 
 With that, our target end-to-end test now passes. Two more to go...
+
+
+#### Step 04 - Follow Through
+
+This is a step where we'll fix two remaining end-to-end tests by further refactoring of the app.
+
+
+##### Commit 1 - Converting Won and Lost
+
+Now that we've converted `sniperBidding()` and `sniperWinning()` to `sniperStateChanged()`, two
+remaining methods remain: `sniperWon()` and `sniperLost()`. When we do that, we're able to simplify
+the code.
+
+Text also mentions that they've used `SniperStateTests` and `Defect` classes, but they're not shown
+in the book. We found them in the books repository. Though that codebase contains only final code
+of the book, we're able to augment missing information from the text that way.

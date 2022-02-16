@@ -42,9 +42,6 @@ public class MainWindow extends JFrame {
         return snipersTable;
     }
 
-    public void showStatus(final String statusText) {
-        snipers.setStatus(statusText);
-    }
 
     public void sniperStateChanged(SniperSnapshot snapshot) {
         snipers.sniperStateChanged(snapshot);
@@ -56,7 +53,9 @@ public class MainWindow extends JFrame {
         private SniperSnapshot snapshot = STARTING_UP;
         private static String[] STATUS_TEXT = { MainWindow.STATUS_JOINING,
                                                 MainWindow.STATUS_BIDDING,
-                                                MainWindow.STATUS_WINNING };
+                                                MainWindow.STATUS_WINNING,
+                                                MainWindow.STATUS_LOST,
+                                                MainWindow.STATUS_WON };
 
         @Override
         public int getRowCount() {
@@ -76,11 +75,6 @@ public class MainWindow extends JFrame {
                 default:
                     throw new IllegalArgumentException("No column at " + columnIndex);
             }
-        }
-
-        public void setStatus(String newStatusText) {
-            this.state = newStatusText;
-            fireTableRowsUpdated(0, 0);
         }
 
         public void sniperStateChanged(SniperSnapshot newSnapshot) {
