@@ -524,3 +524,9 @@ the JTable.
 
 Then we've updated `Column` class to avoid switch statement... and pull mentioned unit test
 from final code of the book, like we did in Commit 1.
+
+
+##### Commit 5 - Shortening the Event Path
+
+Kind of simple follow through of the text. We gleaned `SniperThreadDisplayer` to
+`SwingThreadSniperListener` as a Decorator from final code of the book.

@@ -1,5 +1,6 @@
 package auctionsniper.ui;
 
+import auctionsniper.SniperListener;
 import auctionsniper.SniperSnapshot;
 import auctionsniper.SniperState;
 
@@ -12,10 +13,13 @@ public class MainWindow extends JFrame {
     public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
     public static final String SNIPERS_TABLE_NAME = "Snipers Table";
 
-    private final SnipersTableModel snipers = new SnipersTableModel();
+    private final SnipersTableModel snipers;
 
-    public MainWindow() {
+    public MainWindow(SnipersTableModel snipers) {
         super("Auction Sniper");
+
+        this.snipers = snipers;
+
         setName(MAIN_WINDOW_NAME);
         fillContentPane(makeSnipersTable());
         pack();
@@ -36,12 +40,7 @@ public class MainWindow extends JFrame {
         return snipersTable;
     }
 
-
-    public void sniperStateChanged(SniperSnapshot snapshot) {
-        snipers.sniperStateChanged(snapshot);
-    }
-
-    public static class SnipersTableModel extends AbstractTableModel {
+    public static class SnipersTableModel extends AbstractTableModel implements SniperListener {
         private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0, SniperState.JOINING);
         private SniperSnapshot snapshot = STARTING_UP;
         private final static String[] STATUS_TEXT = { "Joining", "Bidding", "Winning", "Lost", "Won" };
@@ -59,7 +58,7 @@ public class MainWindow extends JFrame {
             return Column.at(columnIndex).valueIn(snapshot);
         }
 
-        public void sniperStateChanged(SniperSnapshot newSnapshot) {
+        public void sniperStateChanged(final SniperSnapshot newSnapshot) {
             this.snapshot = newSnapshot;
             fireTableRowsUpdated(0, 0);
         }
