@@ -31,12 +31,8 @@ public class ApplicationRunner {
 
     private FrameFixture window;
 
-    private String itemId;
-
-    public void startBiddingIn(final FakeAuctionServer auction) {
-        itemId = auction.getItemId();
-
-        ApplicationLauncher.application(Main.class).withArgs(XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD, itemId).start();
+    public void startBiddingIn(final FakeAuctionServer ...auctions) {
+        ApplicationLauncher.application(Main.class).withArgs(arguments(auctions)).start();
 
         Robot robot = BasicRobot.robotWithCurrentAwtHierarchy();
         window = WindowFinder.findFrame(getMainFrameByName(MainWindow.MAIN_WINDOW_NAME)).using(robot);
@@ -47,25 +43,37 @@ public class ApplicationRunner {
         showsSniperStatus("", 0, 0, textFor(SniperState.JOINING));
     }
 
+    protected static String[] arguments(FakeAuctionServer ...auctions) {
+        String[] arguments = new String[auctions.length + 3];
+
+        arguments[0] = XMPP_HOSTNAME;
+        arguments[1] = SNIPER_ID;
+        arguments[2] = SNIPER_PASSWORD;
+        for (int i = 0; i < auctions.length; i++)
+            arguments[i+3] = auctions[i].getItemId();
+
+        return arguments;
+    }
+
     private void hasColumnTitles() {
         for (String columnName : new String[] {"Item", "Last Price", "Last Bid", "State"})
             assertThat(window.table(SNIPERS_TABLE_NAME).columnIndexFor(columnName));
     }
 
-    public void showsSniperHasLostAuction(int lastPrice, int lastBid) {
-        showsSniperStatus(itemId, lastPrice, lastBid, textFor(SniperState.LOST));
+    public void showsSniperHasLostAuction(FakeAuctionServer auction, int lastPrice, int lastBid) {
+        showsSniperStatus(auction.getItemId(), lastPrice, lastBid, textFor(SniperState.LOST));
     }
 
-    public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
-        showsSniperStatus(itemId, lastPrice, lastBid, textFor(SniperState.BIDDING));
+    public void hasShownSniperIsBidding(FakeAuctionServer auction, int lastPrice, int lastBid) {
+        showsSniperStatus(auction.getItemId(), lastPrice, lastBid, textFor(SniperState.BIDDING));
     }
 
-    public void hasShownSniperIsWinning(int winningBid) {
-        showsSniperStatus(itemId, winningBid, winningBid, textFor(SniperState.WINNING));
+    public void hasShownSniperIsWinning(FakeAuctionServer auction, int winningBid) {
+        showsSniperStatus(auction.getItemId(), winningBid, winningBid, textFor(SniperState.WINNING));
     }
 
-    public void showsSniperHasWonAuction(int lastPrice) {
-        showsSniperStatus(itemId, lastPrice, lastPrice, textFor(SniperState.WON));
+    public void showsSniperHasWonAuction(FakeAuctionServer auction, int lastPrice) {
+        showsSniperStatus(auction.getItemId(), lastPrice, lastPrice, textFor(SniperState.WON));
     }
 
     private void showsSniperStatus(String itemId, int lastPrice, int lastBid, String statusText) {

@@ -63,7 +63,6 @@ public class FakeAuctionServer {
     private void receivesAMessage(Condition<String> messageMatcher) throws InterruptedException {
         final Message message = messages.poll(5, TimeUnit.SECONDS);
 
-        assertThat(message).describedAs("Message").isNotNull();
         assertThat(message.getBody()).is(messageMatcher);
     }
 

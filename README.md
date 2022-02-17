@@ -549,3 +549,29 @@ As for testing column titles, the test is different in AssertJ Swing testing lib
 equally easy.
 
 Implementing the TableModel section is trivial follow through...
+
+
+### Chapter 16
+
+Is split in two sections, testing for multiple items, and updating the UI.
+
+
+#### Step 01 - Testing for Multiple Items
+
+
+##### Commit 1 - A Tale of Two Items & The Application Runner
+
+We implement first two sections since we need to update `ApplicationRunner` to make code
+compile anyway.
+
+At this point, we're getting the same Exception they mention in the following
+section `A Diversion, Fixing the Failure Message`. We remove check for null, and now
+`assertJ` statement outputs:
+`Cannot invoke "org.jivesoftware.smack.packet.Message.getBody()" because "message" is null`
+which is close enough error they have with `Hamcrest`. So we're skipping this section, and
+moving directly to `Restructuring Main`.
+
+Apart from this exception which will be resolved in the next commit when we update `Main`,
+also note that we're not closing the connection to second auction. So on repeated runs,
+you'll again see the error we had in Chapter 11:
+`org.jivesoftware.smack.XMPPException$XMPPErrorException: XMPPError: conflict - cancel`.
