@@ -16,6 +16,7 @@ import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.launcher.ApplicationLauncher;
 import org.assertj.swing.fixture.FrameFixture;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.swing.timing.Pause.pause;
 
 import org.assertj.swing.timing.Condition;
@@ -41,7 +42,14 @@ public class ApplicationRunner {
         window = WindowFinder.findFrame(getMainFrameByName(MainWindow.MAIN_WINDOW_NAME)).using(robot);
         window.focus();
 
+        window.requireTitle(MainWindow.APPLICATION_TITLE);
+        hasColumnTitles();
         showsSniperStatus("", 0, 0, textFor(SniperState.JOINING));
+    }
+
+    private void hasColumnTitles() {
+        for (String columnName : new String[] {"Item", "Last Price", "Last Bid", "State"})
+            assertThat(window.table(SNIPERS_TABLE_NAME).columnIndexFor(columnName));
     }
 
     public void showsSniperHasLostAuction(int lastPrice, int lastBid) {

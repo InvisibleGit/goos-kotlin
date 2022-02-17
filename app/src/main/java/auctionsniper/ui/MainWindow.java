@@ -10,13 +10,14 @@ import java.awt.*;
 
 
 public class MainWindow extends JFrame {
+    public static final String APPLICATION_TITLE = "Auction Sniper";
     public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
     public static final String SNIPERS_TABLE_NAME = "Snipers Table";
 
     private final SnipersTableModel snipers;
 
     public MainWindow(SnipersTableModel snipers) {
-        super("Auction Sniper");
+        super(APPLICATION_TITLE);
 
         this.snipers = snipers;
 
@@ -48,6 +49,11 @@ public class MainWindow extends JFrame {
         @Override
         public int getRowCount() {
             return 1;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return Column.at(column).name;
         }
 
         @Override

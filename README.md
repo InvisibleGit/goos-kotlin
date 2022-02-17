@@ -530,3 +530,22 @@ from final code of the book, like we did in Commit 1.
 
 Kind of simple follow through of the text. We gleaned `SniperThreadDisplayer` to
 `SwingThreadSniperListener` as a Decorator from final code of the book.
+
+
+#### Step 05 - Final Polish
+
+Ending the chapter, text now improves the table header. Both sections: "A Test for Column Titles"
+and "Implementing the TableModel" are done in single commit.
+
+In addition to testing for column titles, the app also adds and tests for
+`MainWindows.APPLICATION_TITLE`. Before this was hardcoded string passed inside
+MainWindow's constructor.
+
+The code listing on p.169 is the only place we saw `JOINING.itemId`, `JOINING.lastPrice`
+and `JOINING.lastBid` but we don't know what they are. We've just hardcoded those values
+in Step 04 / Commit 4.
+
+As for testing column titles, the test is different in AssertJ Swing testing library, but
+equally easy.
+
+Implementing the TableModel section is trivial follow through...
