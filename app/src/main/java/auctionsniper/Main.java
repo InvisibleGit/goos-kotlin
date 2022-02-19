@@ -5,12 +5,14 @@ import auctionsniper.ui.MainWindow.SnipersTableModel;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.chat2.Chat;
-import org.jivesoftware.smack.chat2.ChatManager;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromMatchesFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -25,7 +27,6 @@ public class Main {
     public static final int ARG_HOSTNAME = 0;
     public static final int ARG_USERNAME = 1;
     public static final int ARG_PASSWORD = 2;
-    public static final int ARG_ITEM_ID  = 3;
 
     public static final String AUCTION_RESOURCE = "Auction";
     public static final String ITEM_ID_AS_LOGIN = "auction-%s";
@@ -34,12 +35,8 @@ public class Main {
     public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
     public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;";
 
-    private AuctionMessageTranslator translator;
-
     private final SnipersTableModel snipers = new SnipersTableModel();
     private MainWindow ui;
-
-    private Chat notToBeGC;
 
     public Main() throws Exception {
         startUserInterface();
@@ -47,20 +44,25 @@ public class Main {
 
     public static void main(String... args) throws Exception {
         Main main = new Main();
-        main.joinAuction(
-            connect(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]),
-            args[ARG_ITEM_ID]
-        );
+        XMPPTCPConnection connection = connection(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]);
+        main.disconnectWhenUICloses(connection);
+
+        for (int i = 3; i < args.length; i++)
+            main.joinAuction(connection, args[i]);
     }
 
     private void joinAuction(final XMPPTCPConnection connection, final String itemId) throws Exception {
-        disconnectWhenUICloses(connection);
-
         Auction auction = new XMPPAuction(connection, itemId);
-        translator = new AuctionMessageTranslator(
+        AuctionMessageTranslator translator = new AuctionMessageTranslator(
             connection.getUser().toString(),
             new AuctionSniper(itemId, auction, new SwingThreadSniperListener(snipers))
         );
+        StanzaFilter filter = new AndFilter(StanzaTypeFilter.MESSAGE, FromMatchesFilter.create(auctionId(itemId, connection)));
+        connection.addAsyncStanzaListener(stanza -> {
+            String messageBody = ((Message) stanza).getBody();
+            translator.translateMessage(messageBody);
+        }, filter);
+
         auction.join();
     }
 
@@ -73,7 +75,7 @@ public class Main {
         });
     }
 
-    private static XMPPTCPConnection connect(String hostname, String username, String password) throws SmackException, IOException, XMPPException, InterruptedException {
+    private static XMPPTCPConnection connection(String hostname, String username, String password) throws SmackException, IOException, XMPPException, InterruptedException {
         XMPPTCPConnection connection = new XMPPTCPConnection(
             XMPPTCPConnectionConfiguration.builder()
                 .setXmppDomain(hostname)
@@ -86,8 +88,8 @@ public class Main {
         return connection;
     }
 
-    private static FullJid auctionId(String itemId, XMPPTCPConnection connection) throws XmppStringprepException {
-        return JidCreate.fullFrom(
+    private static EntityBareJid auctionId(String itemId, XMPPTCPConnection connection) throws XmppStringprepException {
+        return JidCreate.entityBareFrom(
             String.format(AUCTION_ID_FORMAT, itemId, connection.getXMPPServiceDomain())
         );
     }
@@ -103,12 +105,6 @@ public class Main {
         public XMPPAuction(XMPPTCPConnection connection, String itemId) {
             this.connection = connection;
             this.itemId = itemId;
-
-            ChatManager.getInstanceFor(connection).addIncomingListener((from, message, chat) -> {
-                notToBeGC = chat;
-
-                translator.translateMessage(message.getBody());
-            });
         }
 
         @Override
@@ -116,27 +112,23 @@ public class Main {
             sendMessage(JOIN_COMMAND_FORMAT);
         }
 
-        private void sendMessage(final String message) throws Exception {
-            Message stanza = connection.getStanzaFactory()
-                .buildMessageStanza()
-                .to(auctionId(itemId, connection))
-                .setBody(message)
-                .build();
-            connection.sendStanza(stanza);
-        }
-
         @Override
         public void bid(int amount) {
+            String message = String.format(BID_COMMAND_FORMAT, amount);
             try {
-                Message message = connection.getStanzaFactory()
+                sendMessage(message);
+            } catch (Exception e) {
+                System.out.println("Could not send a bid: " + message);
+            }
+        }
+
+        private void sendMessage(final String message) throws Exception {
+            Message stanza = connection.getStanzaFactory()
                     .buildMessageStanza()
                     .to(auctionId(itemId, connection))
-                    .setBody(String.format(BID_COMMAND_FORMAT, amount))
+                    .setBody(message)
                     .build();
-                connection.sendStanza(message);
-            } catch (XmppStringprepException|SmackException.NotConnectedException|InterruptedException e) {
-                e.printStackTrace();
-            }
+            connection.sendStanza(stanza);
         }
     }
 

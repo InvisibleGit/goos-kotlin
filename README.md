@@ -575,3 +575,18 @@ Apart from this exception which will be resolved in the next commit when we upda
 also note that we're not closing the connection to second auction. So on repeated runs,
 you'll again see the error we had in Chapter 11:
 `org.jivesoftware.smack.XMPPException$XMPPErrorException: XMPPError: conflict - cancel`.
+
+
+##### Commit 2 - Restructuring Main
+
+We need to update how we process messages from OpenFire server. Previously, the single auction
+processed all messages, but now we need to split processing by auction. Even before we needed to
+deviate from the book code listings since Smack v4 had some major changes. Now we need to change
+even more, and we're now using concept of Stanzas and StanzaFilters to achieve this. Furthermore,
+since we no longer use Chat feature, we don't need `notToBeGC` field any more.
+
+At this point we reached the stage where end-to-end test fails because table has only one row,
+which will be resolved in the next commit.
+
+Additionally, we're still getting `XMPPError: conflict - cancel` when end-to-end test fails, so
+manual restart of OpenFire is still needed for a little while.
