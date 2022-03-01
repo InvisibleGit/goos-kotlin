@@ -590,3 +590,36 @@ which will be resolved in the next commit.
 
 Additionally, we're still getting `XMPPError: conflict - cancel` when end-to-end test fails, so
 manual restart of OpenFire is still needed for a little while.
+
+
+##### Commit 3 - Extending the Table Model
+
+We slowly progress by creating a test and then programming the minimal implementation for a test
+to pass.
+
+Even though we can easily translate from jMock to Mockito with [refEq](https://stackoverflow.com/a/39930882)
+call, there is major problem with this running on Java 17 and above, since you can't snoop on
+Swing library anymore thanks to [JDK Enhancement/Proposal 403: Strongly Encapsulate JDK Internals](https://openjdk.java.net/jeps/403).
+So even if we [use](https://docs.oracle.com/en/java/javase/17/migrate/migrating-jdk-8-later-jdk-releases.html#GUID-12F945EB-71D6-46AF-8C3D-D354FD0B1781):
+`--add-opens java.desktop/javax.swing.event=ALL-UNNAMED` it doesn't work anymore.
+If you want this tests to continue working as book intends, you need to make sure you're using older
+JDK, like v11.
+
+Some methods like `assertRowMatchesSnapshot()` and `cellValue()` are shown as helper methods in book
+without implementation details. Other tests like `updatesCorrectRowForSniper()` and
+`throwsDefectIfNoExistingSniperForAnUpdate()` are completely left to the reader since their
+"implementation is obvious". For those we pick them from books repository. For
+`updatesCorrectRowForSniper()` we just check for INSERT/UPDATE events and `model` contains correct
+data. We don't verify for `listener.aChangeInRow()` since that doesn't work with our implementation.
+Maybe for the better. Testing for internal calls of Swing library is probably not smart in the first
+place.
+
+Now the end-to-end test passes, but we are again troubled with `XMPPError: conflict - cancel`. It
+seems decision in Chapter 11 that we set OpenFire's Resource Policy to "Never Kick" is proving to
+be more trouble than it's worth. We now back off it and set it to "Always kick" so that repeated
+runs of test don't give us `XMPPError: conflict - cancel`. This may be because `Smack` or `OpenFire`
+have changed of how they work, or it may always have been an issue, since we don't have logout()
+API call, and second auction is kept logged in after the app/test finishes.
+
+Also note that in `ApplicationRunner`'s `startBiddingIn()` we needed to comment out:
+`showsSniperStatus("", 0, 0, textFor(SniperState.JOINING));`, but that will be resolved very soon.

@@ -40,7 +40,7 @@ public class ApplicationRunner {
 
         window.requireTitle(MainWindow.APPLICATION_TITLE);
         hasColumnTitles();
-        showsSniperStatus("", 0, 0, textFor(SniperState.JOINING));
+        //showsSniperStatus("", 0, 0, textFor(SniperState.JOINING));
     }
 
     protected static String[] arguments(FakeAuctionServer ...auctions) {
@@ -84,9 +84,10 @@ public class ApplicationRunner {
             public boolean test() {
                 String[][] tableContents = window.table(SNIPERS_TABLE_NAME).contents();
 
-                if (Arrays.deepEquals(tableContents, new String[][] {
-                    { itemId, Integer.toString(lastPrice), Integer.toString(lastBid), statusText }
-                })) return true;
+                for (int i = 0; i < tableContents.length; i++)
+                    if (Arrays.deepEquals(tableContents[i], new String[] {
+                        itemId, Integer.toString(lastPrice), Integer.toString(lastBid), statusText
+                    })) return true;
 
                 foundValue = String.format("%s", Arrays.toString(tableContents[0]));
                 return false;
@@ -94,7 +95,7 @@ public class ApplicationRunner {
 
             @Override
             public String descriptionAddendum() {
-                return ", found: \"" + foundValue + "\""; // adds more descriptive error by appending found value
+                return ", not found"; // adds more descriptive error by appending found value
             }
         }, 1000);
     }

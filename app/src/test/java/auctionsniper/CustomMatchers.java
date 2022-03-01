@@ -4,6 +4,7 @@ import org.assertj.swing.core.GenericTypeMatcher;
 import org.mockito.ArgumentMatcher;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
 
 
 public class CustomMatchers {
@@ -43,6 +44,32 @@ public class CustomMatchers {
         }
         public String toString() {
             return "wanted snapshot with state: " + wantedState + ", but was: " + foundState;
+        }
+    }
+
+    public static TableModelEventMatcher isOfType(int eventType) {
+        return new TableModelEventMatcher(eventType);
+    }
+
+    static class TableModelEventMatcher implements ArgumentMatcher<TableModelEvent> {
+        private final int wantedType;
+        private int foundType;
+
+        TableModelEventMatcher(int wantedType) {
+            this.wantedType = wantedType;
+        }
+
+        public boolean matches(TableModelEvent tableModelEvent) {
+            foundType = tableModelEvent.getType();
+            return tableModelEvent.getType() == wantedType;
+        }
+
+        public String toString() {
+            return "wanted TableModelEvent of type: " + typeToString(wantedType) + ", but was: " + typeToString(foundType);
+        }
+
+        private String typeToString(int type) {
+            return (type == 0) ? "UPDATE" : (type == 1) ? "INSERT" : "DELETE";
         }
     }
 }

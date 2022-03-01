@@ -52,6 +52,7 @@ public class Main {
     }
 
     private void joinAuction(final XMPPTCPConnection connection, final String itemId) throws Exception {
+        safelyAddItemToModel(itemId);
         Auction auction = new XMPPAuction(connection, itemId);
         AuctionMessageTranslator translator = new AuctionMessageTranslator(
             connection.getUser().toString(),
@@ -64,6 +65,10 @@ public class Main {
         }, filter);
 
         auction.join();
+    }
+
+    private void safelyAddItemToModel(final String itemId) throws Exception {
+        SwingUtilities.invokeAndWait(() -> snipers.addSniper(SniperSnapshot.joining(itemId)));
     }
 
     private void disconnectWhenUICloses(XMPPTCPConnection connection) {
@@ -143,5 +148,8 @@ public class Main {
         public void sniperStateChanged(final SniperSnapshot snapshot) {
             SwingUtilities.invokeLater(() -> delegate.sniperStateChanged(snapshot));
         }
+
+        @Override
+        public void addSniper(SniperSnapshot snapshot) {}
     }
 }

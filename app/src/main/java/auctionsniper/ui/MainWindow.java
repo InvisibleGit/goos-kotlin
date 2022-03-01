@@ -3,10 +3,12 @@ package auctionsniper.ui;
 import auctionsniper.SniperListener;
 import auctionsniper.SniperSnapshot;
 import auctionsniper.SniperState;
+import auctionsniper.util.Defect;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 
 
 public class MainWindow extends JFrame {
@@ -42,13 +44,12 @@ public class MainWindow extends JFrame {
     }
 
     public static class SnipersTableModel extends AbstractTableModel implements SniperListener {
-        private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0, SniperState.JOINING);
-        private SniperSnapshot snapshot = STARTING_UP;
+        private ArrayList<SniperSnapshot> snapshots = new ArrayList<>();
         private final static String[] STATUS_TEXT = { "Joining", "Bidding", "Winning", "Lost", "Won" };
 
         @Override
         public int getRowCount() {
-            return 1;
+            return snapshots.size();
         }
 
         @Override
@@ -61,12 +62,28 @@ public class MainWindow extends JFrame {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            return Column.at(columnIndex).valueIn(snapshot);
+            Object value = Column.at(columnIndex).valueIn(snapshots.get(rowIndex));
+            return value;
         }
 
-        public void sniperStateChanged(final SniperSnapshot newSnapshot) {
-            this.snapshot = newSnapshot;
-            fireTableRowsUpdated(0, 0);
+        public void sniperStateChanged(SniperSnapshot newSnapshot) {
+            int row = rowMatching(newSnapshot);
+            snapshots.set(row, newSnapshot);
+            fireTableCellUpdated(row, row);
+        }
+
+        private int rowMatching(SniperSnapshot snapshot) {
+            for (int i = 0; i < snapshots.size(); i++)
+                if (snapshot.isForSameItemAs(snapshots.get(i)))
+                    return i;
+
+            throw new Defect("Cannot find match for " + snapshot);
+        }
+
+        @Override
+        public void addSniper(SniperSnapshot snapshot) {
+            snapshots.add(snapshot);
+            fireTableRowsInserted(0, snapshots.size() - 1);
         }
 
         public static String textFor(SniperState state) {
