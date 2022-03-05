@@ -47,8 +47,10 @@ public class Main {
         XMPPTCPConnection connection = connection(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]);
         main.disconnectWhenUICloses(connection);
 
+        /*
         for (int i = 3; i < args.length; i++)
             main.joinAuction(connection, args[i]);
+        */
     }
 
     private void joinAuction(final XMPPTCPConnection connection, final String itemId) throws Exception {

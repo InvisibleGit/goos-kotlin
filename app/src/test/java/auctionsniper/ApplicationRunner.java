@@ -32,7 +32,17 @@ public class ApplicationRunner {
     private FrameFixture window;
 
     public void startBiddingIn(final FakeAuctionServer ...auctions) {
-        ApplicationLauncher.application(Main.class).withArgs(arguments(auctions)).start();
+        startSniper();
+
+        for (FakeAuctionServer auction : auctions) {
+            final String itemId = auction.getItemId();
+            startBiddingFor(itemId);
+            showsSniperStatus(itemId, 0, 0, textFor(SniperState.JOINING));
+        }
+    }
+
+    private void startSniper() {
+        ApplicationLauncher.application(Main.class).withArgs(XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD).start();
 
         Robot robot = BasicRobot.robotWithCurrentAwtHierarchy();
         window = WindowFinder.findFrame(getMainFrameByName(MainWindow.MAIN_WINDOW_NAME)).using(robot);
@@ -40,19 +50,11 @@ public class ApplicationRunner {
 
         window.requireTitle(MainWindow.APPLICATION_TITLE);
         hasColumnTitles();
-        //showsSniperStatus("", 0, 0, textFor(SniperState.JOINING));
     }
 
-    protected static String[] arguments(FakeAuctionServer ...auctions) {
-        String[] arguments = new String[auctions.length + 3];
-
-        arguments[0] = XMPP_HOSTNAME;
-        arguments[1] = SNIPER_ID;
-        arguments[2] = SNIPER_PASSWORD;
-        for (int i = 0; i < auctions.length; i++)
-            arguments[i+3] = auctions[i].getItemId();
-
-        return arguments;
+    private void startBiddingFor(final String itemId) {
+        window.textBox(MainWindow.NEW_ITEM_ID_NAME).deleteText().enterText(itemId);
+        window.button(MainWindow.JOIN_BUTTON_NAME).click();
     }
 
     private void hasColumnTitles() {
@@ -89,7 +91,11 @@ public class ApplicationRunner {
                         itemId, Integer.toString(lastPrice), Integer.toString(lastBid), statusText
                     })) return true;
 
-                foundValue = String.format("%s", Arrays.toString(tableContents[0]));
+                if (tableContents.length > 0)
+                    foundValue = String.format("%s", Arrays.toString(tableContents[0]));
+                else
+                    foundValue = "Table is empty!";
+
                 return false;
             }
 

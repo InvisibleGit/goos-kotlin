@@ -623,3 +623,14 @@ API call, and second auction is kept logged in after the app/test finishes.
 
 Also note that in `ApplicationRunner`'s `startBiddingIn()` we needed to comment out:
 `showsSniperStatus("", 0, 0, textFor(SniperState.JOINING));`, but that will be resolved very soon.
+
+
+#### Step 02 - Adding Items through the User Interface
+
+
+##### Commit 1 - Update the Test & Adding an Action Bar
+
+Combines two sections of the book, so that we also implement the newly added test.
+
+Since we no longer pass auctions as command line params, for now we disable `main.joinAuction()`
+calls in `Main.main()`.
