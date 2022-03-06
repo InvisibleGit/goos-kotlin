@@ -634,3 +634,12 @@ Combines two sections of the book, so that we also implement the newly added tes
 
 Since we no longer pass auctions as command line params, for now we disable `main.joinAuction()`
 calls in `Main.main()`.
+
+
+##### Commit 2 - UserRequestListener interface & Another Level of Testing
+
+
+Adds `UserRequestListener` interface, and adds a new test, though implemented a bit differently
+then with WindowLicker... Nevertheless, the test works properly.
+
+As for `Announcer` helper class, we copy if from final code of the book.
