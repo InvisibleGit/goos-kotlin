@@ -46,31 +46,31 @@ public class Main {
         Main main = new Main();
         XMPPTCPConnection connection = connection(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]);
         main.disconnectWhenUICloses(connection);
-
-        /*
-        for (int i = 3; i < args.length; i++)
-            main.joinAuction(connection, args[i]);
-        */
+        main.addUserRequestListenerFor(connection);
     }
 
-    private void joinAuction(final XMPPTCPConnection connection, final String itemId) throws Exception {
-        safelyAddItemToModel(itemId);
-        Auction auction = new XMPPAuction(connection, itemId);
-        AuctionMessageTranslator translator = new AuctionMessageTranslator(
-            connection.getUser().toString(),
-            new AuctionSniper(itemId, auction, new SwingThreadSniperListener(snipers))
-        );
-        StanzaFilter filter = new AndFilter(StanzaTypeFilter.MESSAGE, FromMatchesFilter.create(auctionId(itemId, connection)));
-        connection.addAsyncStanzaListener(stanza -> {
-            String messageBody = ((Message) stanza).getBody();
-            translator.translateMessage(messageBody);
-        }, filter);
+    private void addUserRequestListenerFor(final XMPPTCPConnection connection) {
+        ui.addUserRequestListener(itemId -> {
+            snipers.addSniper(SniperSnapshot.joining(itemId));
 
-        auction.join();
-    }
+            try {
+                Auction auction = new XMPPAuction(connection, itemId);
+                AuctionMessageTranslator translator = new AuctionMessageTranslator(
+                    connection.getUser().toString(),
+                    new AuctionSniper(itemId, auction, new SwingThreadSniperListener(snipers))
+                );
 
-    private void safelyAddItemToModel(final String itemId) throws Exception {
-        SwingUtilities.invokeAndWait(() -> snipers.addSniper(SniperSnapshot.joining(itemId)));
+                StanzaFilter filter = new AndFilter(StanzaTypeFilter.MESSAGE, FromMatchesFilter.create(auctionId(itemId, connection)));
+                connection.addAsyncStanzaListener(stanza -> {
+                    String messageBody = ((Message) stanza).getBody();
+                    translator.translateMessage(messageBody);
+                }, filter);
+
+                auction.join();
+            } catch (Exception e) {
+                throw new RuntimeException("Couldn't join auction: " + itemId, e);
+            }
+        });
     }
 
     private void disconnectWhenUICloses(XMPPTCPConnection connection) {

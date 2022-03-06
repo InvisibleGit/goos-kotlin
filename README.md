@@ -643,3 +643,8 @@ Adds `UserRequestListener` interface, and adds a new test, though implemented a 
 then with WindowLicker... Nevertheless, the test works properly.
 
 As for `Announcer` helper class, we copy if from final code of the book.
+
+
+##### Commit 3 - Implementing the UserRequestListener
+
+Finally, we implement the `UserRequestListener` in `Main` and end-to-end tests again all pass.
