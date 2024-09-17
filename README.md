@@ -648,3 +648,22 @@ As for `Announcer` helper class, we copy if from final code of the book.
 ##### Commit 3 - Implementing the UserRequestListener
 
 Finally, we implement the `UserRequestListener` in `Main` and end-to-end tests again all pass.
+
+
+### Follow Up - Chapters 17-19
+
+In Chapter 17, they refactor Main class to become "domain" or core of the application. It contains
+only domain concepts and Smack and Swing parts are moved aside. They also start to package objects
+into subpackages...
+
+They say even less of what they do in the codebase apart from what is interesting for chapter topics,
+yet comparing final book code to what's going on in the text we clearly see major changes.
+
+I've read ahead chapters 18 and 19 in hope some of the code changes would be at least touched, but
+they were not.
+
+Because of that I've decided to stop this project with Chapter 16. You can easily read through these
+last three chapters with full understanding of what is happening. If you wish, you can even implement
+them using previous knowledge you gained so far. For me though, I've just moved on to Part IV of the
+book and onwards...
+
